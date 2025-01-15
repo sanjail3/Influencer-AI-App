@@ -7,9 +7,9 @@ export interface ProductInfo {
   customer_reviews: string;
   pricing: string;
 }
-
+export type ProductInfoArray = ProductInfo[];
 export interface ApiResponse {
-  product_information: ProductInfo;
+  product_information: ProductInfoArray;
   screenshot: {
     data: string;
     dimensions: {

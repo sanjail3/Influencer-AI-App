@@ -22,6 +22,7 @@ export async function fetchProductInfo(url: string): Promise<ApiResponse> {
     return await response.json();
   } catch (error) {
     console.log('Using dummy data due to API error:', error);
-    return dummyProductData;
+    throw new Error('Failed to fetch product information');
+    // return dummyProductData;
   }
 }

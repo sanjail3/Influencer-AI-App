@@ -24,6 +24,8 @@ export default function CreateVideoPage() {
   const [url, setUrl] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [productData, setProductData] = useState<ApiResponse | null>(null);
+
+
   const [error, setError] = useState('');
   const { videoData, updateVideoData } = useVideoState();
 
@@ -51,6 +53,7 @@ export default function CreateVideoPage() {
       const data = await fetchProductInfo(url);
       console.log(data);
       setProductData(data);
+     
       
     } catch (err) {
       setError('Failed to fetch product information. Please try again.');
@@ -72,6 +75,7 @@ export default function CreateVideoPage() {
             <LoadingSpinner text="Analyzing product..." />
           </div>
         ) : productData ? (
+          
           <ProductForm 
             productInfo={productData.product_information[0]}
             // onUpdateData={(productData) => videoFlow.updateVideoData({

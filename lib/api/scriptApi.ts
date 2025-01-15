@@ -20,6 +20,7 @@ export async function generateScripts(productInfo: any): Promise<ScriptResponse>
     return await response.json();
   } catch (error) {
     console.log('Using dummy script data due to API error:', error);
-    return dummyScriptData;
+    throw new Error('Failed to fetch product information');
+    // return dummyScriptData;
   }
 }

@@ -100,7 +100,7 @@ export function ProductForm({ productInfo, screenshot, onBack, screenshot_data }
                     {key.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
                   </label>
                   <Textarea
-                    value={formData[key]}
+                    value={formData[key as keyof typeof formData]}
                     onChange={(e) => setFormData({...formData, [key]: e.target.value})}
                     className="w-full resize-none border border-purple-600/40 rounded-lg focus:ring-2 focus:ring-purple-500"
                     rows={rows}
@@ -127,7 +127,7 @@ export function ProductForm({ productInfo, screenshot, onBack, screenshot_data }
                     {key.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
                   </label>
                   <Textarea
-                    value={formData[key]}
+                    value={formData[key as keyof typeof formData]}
                     onChange={(e) => setFormData({...formData, [key]: e.target.value})}
                     className="w-full resize-none border border-purple-600/40 rounded-lg focus:ring-2 focus:ring-purple-500"
                     rows={rows}

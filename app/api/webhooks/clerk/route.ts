@@ -1,119 +1,137 @@
-import { Webhook } from 'svix'
-import { headers } from 'next/headers'
-import { WebhookEvent } from '@clerk/nextjs/server'
-import { prisma } from '@/lib/db'
+// src/app/api/webhook/clerk/route.ts
+import { prisma } from '@/lib/db';
+import type { WebhookEvent } from '@clerk/nextjs/server';
+import { NextResponse } from 'next/server';
+
+// Type guard function to check if the object has email_addresses
+function hasEmailAddresses(obj: any): obj is { email_addresses: string[] } {
+    return obj && typeof obj.email_addresses !== 'undefined';
+}
 
 export async function POST(req: Request) {
-  // Get the headers
-  const headerPayload = await headers();
-  const svix_id = await headerPayload.get("svix-id");
-  const svix_timestamp = await headerPayload.get("svix-timestamp");
-  const svix_signature = await headerPayload.get("svix-signature");
-
-  // If there are no headers, error out
-  if (!svix_id || !svix_timestamp || !svix_signature) {
-    return new Response('Error occured -- no svix headers', {
-      status: 400
-    });
-  }
-
-  // Get the body
-  const payload = await req.json()
-  const body = JSON.stringify(payload);
-
-  // Create a new Svix instance with your secret.
-  const wh = new Webhook(process.env.CLERK_WEBHOOK_SECRET || '');
-
-  let evt: WebhookEvent
-
-  // Verify the payload
-  try {
-    evt = wh.verify(body, {
-      "svix-id": svix_id,
-      "svix-timestamp": svix_timestamp,
-      "svix-signature": svix_signature,
-    }) as WebhookEvent
-  } catch (err) {
-    console.error('Error verifying webhook:', err);
-    return new Response('Error occured', {
-      status: 400
-    })
-  }
-
-  // Handle the webhook
-  const eventType = evt.type;
-
-  if (eventType === 'user.created') {
-    const { id, email_addresses, ...attributes } = evt.data;
-    const primaryEmail = email_addresses[0]?.email_address;
-
-    if (!primaryEmail) {
-      return new Response('No email address found', { status: 400 });
-    }
-
     try {
-      const user = await prisma.user.create({
-        data: {
-          clerkId: id,
-          email: primaryEmail,
-          credits: 10, // Default credits for new users
-        },
-      });
+        // Parse the Clerk Webhook event
+        const evt = (await req.json()) as WebhookEvent;
+        const eventType = evt.type;
+        const { id: clerkUserId } = evt.data;
 
-      // Create initial credit transaction
-      await prisma.transaction.create({
-        data: {
-          userId: user.id,
-          amount: 10,
-          type: 'PLAN_CREDIT',
-          description: 'Welcome credits',
-        },
-      });
+        if (!clerkUserId) {
+            return NextResponse.json(
+                { error: 'No user ID provided' },
+                { status: 400 }
+            );
+        }
 
-      return new Response('User created', { status: 201 });
+        if (!hasEmailAddresses(evt.data)) {
+            return NextResponse.json(
+                { error: 'No email addresses found' },
+                { status: 400 }
+            );
+        }
+
+        const { email_addresses } = evt.data;
+
+        // Handle user creation
+        if (eventType === 'user.created') {
+            if (!hasEmailAddresses(evt.data)) {
+                return NextResponse.json(
+                    { error: 'No email addresses found' },
+                    { status: 400 }
+                );
+            }
+
+            const primaryEmail = evt.data.email_addresses[0]?.email_address;
+
+            if (!primaryEmail) {
+                return NextResponse.json(
+                    { error: 'No email address found' },
+                    { status: 400 }
+                );
+            }
+
+            const newUser = await prisma.user.create({
+                data: {
+                    clerkId: clerkUserId,
+                    email: primaryEmail,
+                    credits: 10, // Default credits
+                }
+            });
+
+            // Create initial credit transaction
+            await prisma.transaction.create({
+                data: {
+                    userId: newUser.id,
+                    amount: 10,
+                    type: 'PLAN_CREDIT',
+                    description: 'Welcome credits',
+                }
+            });
+
+            return NextResponse.json(
+                { message: 'User created successfully', user: newUser },
+                { status: 201 }
+            );
+        }
+
+        // Handle user deletion
+        if (eventType === 'user.deleted') {
+            const deletedUser = await prisma.user.delete({
+                where: { clerkId: clerkUserId }
+            });
+
+            return NextResponse.json(
+                { message: 'User deleted successfully', user: deletedUser },
+                { status: 200 }
+            );
+        }
+
+        // Handle user updates
+        if (eventType === 'user.updated') {
+            if (!hasEmailAddresses(evt.data)) {
+                return NextResponse.json(
+                    { error: 'No email addresses found' },
+                    { status: 400 }
+                );
+            }
+
+            const primaryEmail = evt.data.email_addresses[0]?.email_address;
+
+            if (!primaryEmail) {
+                return NextResponse.json(
+                    { error: 'No email address found' },
+                    { status: 400 }
+                );
+            }
+
+            const updatedUser = await prisma.user.update({
+                where: { clerkId: clerkUserId },
+                data: { email: primaryEmail }
+            });
+
+            return NextResponse.json(
+                { message: 'User updated successfully', user: updatedUser },
+                { status: 200 }
+            );
+        }
+
+        // Default response for unhandled event types
+        return NextResponse.json(
+            { message: 'Webhook received but no action taken' },
+            { status: 200 }
+        );
+
     } catch (error) {
-      console.error('Error creating user:', error);
-      return new Response('Error creating user', { status: 500 });
+        console.error('Webhook error:', error);
+        return NextResponse.json(
+            { error: 'Internal server error' },
+            { status: 500 }
+        );
     }
-  }
-
-  // Handle user updates if needed
-  if (eventType === 'user.updated') {
-    const { id, email_addresses } = evt.data;
-    const primaryEmail = email_addresses[0]?.email_address;
-
-    if (!primaryEmail) {
-      return new Response('No email address found', { status: 400 });
-    }
-
-    try {
-      await prisma.user.update({
-        where: { clerkId: id },
-        data: { email: primaryEmail },
-      });
-
-      return new Response('User updated', { status: 200 });
-    } catch (error) {
-      console.error('Error updating user:', error);
-      return new Response('Error updating user', { status: 500 });
-    }
-  }
-
-  // Handle user deletions
-  if (eventType === 'user.deleted') {
-    const { id } = evt.data;
-
-    try {
-      await prisma.user.delete({
-        where: { clerkId: id },
-      });
-
-      return new Response('User deleted', { status: 200 });
-    } catch (error) {
-      console.error('Error deleting user:', error);
-      return new Response('Error deleting user', { status: 500 });
-    }
-  }
-
-  return new Response('Webhook received', { status: 200 });
 }
+
+// Configure CORS if needed
+export const config = {
+    api: {
+        bodyParser: false,
+    },
+};

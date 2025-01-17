@@ -1,0 +1,111 @@
+// This is your Prisma schema file
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// User model that connects with Clerk
+model User {
+  id            String    @id @default(cuid())
+  clerkId       String    @unique // External ID from Clerk
+  email         String    @unique
+  credits       Int       @default(10)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  subscription  Subscription?
+  projects      Project[]
+  videos        Video[]
+  transactions  Transaction[]
+}
+
+// Subscription and plan management
+model Subscription {
+  id            String    @id @default(cuid())
+  userId        String    @unique
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  planId        String
+  plan          Plan      @relation(fields: [planId], references: [id])
+  status        SubscriptionStatus
+  currentPeriodStart DateTime
+  currentPeriodEnd   DateTime
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Plan {
+  id            String    @id @default(cuid())
+  name          String
+  description   String
+  price         Float
+  credits       Int      // Credits per billing cycle
+  features      String[] // Array of features included in this plan
+  subscriptions Subscription[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+// Project management
+model Project {
+  id            String    @id @default(cuid())
+  name          String
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  websiteUrl    String
+  metadata      Json?     // Stored website metadata
+  videos        Video[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+// Video management
+model Video {
+  id            String    @id @default(cuid())
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  projectId     String
+  project       Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  title         String
+  description   String?
+  status        VideoStatus
+  blobUrl       String?   // Azure Blob Storage URL
+  creditsCost   Int       @default(10)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+// Credit transactions history
+model Transaction {
+  id            String    @id @default(cuid())
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  amount        Int       // Can be positive (purchase) or negative (usage)
+  type          TransactionType
+  description   String
+  createdAt     DateTime  @default(now())
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELED
+  EXPIRED
+}
+
+enum VideoStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum TransactionType {
+  PURCHASE
+  USAGE
+  PLAN_CREDIT
+  REFUND
+}

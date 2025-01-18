@@ -1,6 +1,6 @@
 "use client";
 
-import { Sidebar } from "@/components/layout/Sidebar";
+import  {Sidebar}  from "@/components/layout/Sidebar";
 import { FeaturedProducts } from "@/components/dashboard/FeaturedProducts";
 import { PopularTools } from "@/components/dashboard/PopularTools";
 import { Button } from "@/components/ui/button";

@@ -1,5 +1,5 @@
 "use client";
-
+import { UserButton } from "@clerk/nextjs";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,6 +13,8 @@ import {
   Rocket
 } from "lucide-react";
 import { useState } from "react";
+
+import { getUserCredits } from '@/lib/database/user'
 
 const sidebarItems = [
   {
@@ -48,8 +50,25 @@ const sidebarItems = [
   },
 ];
 
-export function Sidebar() {
+export  function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
+  // const credits = await getUserCredits()
+
+  // useEffect(() => {
+  //   const updateCredits = async () => {
+  //     try {
+  //       const response = await fetch('/api/credits')
+  //       const data = await response.json()
+  //       setCredits(data.credits)
+  //     } catch (error) {
+  //       console.error('Failed to fetch credits:', error)
+  //     }
+  //   }
+
+  //   // Update credits every minute
+  //   const interval = setInterval(updateCredits, 60000)
+  //   return () => clearInterval(interval)
+  // }, [])
 
   return (
     <div
@@ -102,6 +121,27 @@ export function Sidebar() {
             )}
           </Button>
         ))}
+      </div>
+
+      {/* User Profile Button */}
+      <div className="p-4 border-t border-purple-800/20">
+        <div className={cn("flex items-center", collapsed ? "justify-center" : "gap-2")}>
+          <UserButton
+            afterSignOutUrl="/"
+            appearance={{
+              elements: {
+                avatarBox: "h-10 w-10"
+              }
+            }}
+          />
+          {!collapsed && (
+            <div className="flex-1 min-w-0">
+              <div className="text-sm font-medium text-purple-300 truncate">
+                Profile
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

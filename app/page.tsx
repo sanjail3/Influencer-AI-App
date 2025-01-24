@@ -4,6 +4,8 @@ import { Hero } from '@/components/landing-page/sections/hero';
 import { Problems } from '@/components/landing-page/sections/problems';
 import { Solutions } from '@/components/landing-page/sections/solutions';
 import { CTA } from '@/components/landing-page/sections/cta';
+import { LandingPagePricing } from '@/components/landing-page/pricing-page';
+
 
 export default function Home() {
   return (
@@ -22,6 +24,7 @@ export default function Home() {
         <Hero />
         <Problems />
         <Solutions />
+        <LandingPagePricing />
         <CTA />
       </main>
 

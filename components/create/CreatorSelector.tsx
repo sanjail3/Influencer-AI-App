@@ -9,6 +9,11 @@ import { generateVideo } from '@/lib/api/videogeneration';
 import { useRouter } from 'next/navigation';
 import { LoadingSpinner } from './LoadingSpinner';
 import { MultiStepLoader as Loader } from "../ui/multi-step-loader";
+import { useSearchParams } from 'next/navigation';
+import { Toaster, toast } from 'sonner';
+
+// In your JSX
+<Toaster position="top-right" richColors />
 
 
 interface CreatorSelectorProps {
@@ -105,45 +110,98 @@ export function CreatorSelector({ creators, voices, onBack, onNext,screenshot_da
   
 
 
-  const handleGenerate = async () => {
-    setIsLoading(true);
-    if (selectedCreator) {
-      updateVideoData({
-        screenshot_path: screenshot_data,
-        script: selectedScript,
-        
-        voice: { 
-          voice_id: "21m00Tcm4TlvDq8ikWAM",
-          output_format: 'mp3_44100_128',
-          model_id: 'eleven_multilingual_v2'
-        },
-        avatar: {
-          avatar_id: "002",
-          background_type: 'with_bg'
-        }
-      });
-      
+    const searchParams = useSearchParams();
+    const projectId = searchParams.get('projectId');
+  
+    const saveVideoToProject = async (videoUrl: string) => {
       try {
-        
-        console.log(videoData);
-        const response = await generateVideo(videoData);
-        console.log(response);
-
-        router.push(`/create/video/output?${new URLSearchParams({
-          url: response,
-
-        })}`);
-
-        // console.log('Video URL:', videoUrl);
-        // Handle success
+        const response = await fetch('/api/videos', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            projectId,
+            title: 'AI Generated Video', // You can make this dynamic
+            description: selectedScript,
+            blobUrl: videoUrl,
+            status: 'COMPLETED'
+          }),
+        });
+  
+        if (!response.ok) {
+          throw new Error('Failed to save video');
+        }
+  
+        return await response.json();
       } catch (error) {
-        throw error
+        console.error('Error saving video:', error);
+        throw error;
       }
-      finally {
-        setIsLoading(false);
+    };
+  
+    const handleGenerate = async () => {
+      setIsLoading(true);
+      if (selectedCreator) {
+        updateVideoData({
+          screenshot_path: screenshot_data,
+          script: selectedScript,
+          voice: { 
+            voice_id: "21m00Tcm4TlvDq8ikWAM",
+            output_format: 'mp3_44100_128',
+            model_id: 'eleven_multilingual_v2'
+          },
+          avatar: {
+            avatar_id: "002",
+            background_type: 'with_bg'
+          }
+        });
+        
+        try {
+
+          const checkResponse = await fetch('/api/user/check-subscription');
+
+          console.log(checkResponse)
+
+          console.log(checkResponse.ok)
+        
+        if (!checkResponse.ok) {
+            const errorData = await checkResponse.json();
+            
+            // Show specific toast based on error type
+            if (checkResponse.status === 401) {
+                toast.error('Please login to generate videos');
+            } else if (errorData.errorType === 'INSUFFICIENT_CREDITS') {
+                toast.error('You need more credits. Upgrade your plan or purchase more credits.');
+            } else if (errorData.errorType === 'NO_SUBSCRIPTION') {
+                toast.error('Premium subscription required for video generation');
+            } else {
+                toast.error('Failed to verify subscription status');
+            }
+            return;
+        }
+          const response= await generateVideo(videoData);
+          // const response="https://aisaasvalidator.blob.core.windows.net/video-gpt/generated_videos/tmp1419zo3d.mp4"
+
+          // Save video to database
+          const savedVideo = await saveVideoToProject(response);
+
+          console.log('Video saved to project:', savedVideo);
+          
+          // Navigate to output page with project and video IDs
+          router.push(`/create/video/output?${new URLSearchParams({
+            url: response,
+            projectId: projectId || '',
+            videoId: savedVideo.id
+          })}`);
+        } catch (error) {
+          console.error('Error:', error);
+        } finally {
+          setIsLoading(false);
+        }
       }
-    }
-  };
+    };
+  
 
 
 

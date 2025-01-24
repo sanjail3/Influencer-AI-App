@@ -6,6 +6,8 @@ import { GraduationCap, Play } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import GlitchText from "../ui/glitch-text";
+import { CreateProjectDialog } from "./CreateProjectDialog";
+
 
 
 export function FeaturedProducts() {
@@ -36,12 +38,7 @@ export function FeaturedProducts() {
                   Make engaging video ads with a few clicks
                 </p>
                 <div className="flex gap-3">
-                  <Button 
-                    className="bg-gradient-to-r from-[#d550ac] to-[#7773FA] hover:opacity-90 transition-opacity"
-                    onClick={() => router.push('/create/video')}
-                  >
-                    Create now
-                  </Button>
+                <CreateProjectDialog />
                   <Button variant="ghost" className="bg-purple-900/30 backdrop-blur-sm">
                     <GraduationCap className="w-5 h-5" />
                   </Button>

@@ -1,5 +1,4 @@
 
-
 interface VideoData {
   voice: {
     voice_id: string;
@@ -23,17 +22,25 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
 
 
 
+
+
+
 export async function generateVideo (videoData: VideoData){
   try {
-    console.log(videoData);
-    const response = await fetch(`${API_URL}/api/generate-video`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(videoData)
-    });
     
-    const data = await response.json();
-    return data.video_url;
+
+    // const response = await fetch(`${API_URL}/api/generate-video`, {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify(videoData)
+    // });
+    
+    // const data = await response.json();
+    // return data.video_url;
+
+    const response="https://aisaasvalidator.blob.core.windows.net/video-gpt/generated_videos/tmp1419zo3d.mp4";
+
+    return response;
   } catch (error) {
     console.error('Error generating video:', error);
     throw error;

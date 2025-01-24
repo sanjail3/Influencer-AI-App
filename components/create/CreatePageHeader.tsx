@@ -4,13 +4,30 @@ import { Rocket } from "lucide-react";
 import { Button } from "../ui/button";
 import { Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useState, useEffect } from 'react';
 
 interface CreatePageHeaderProps {
   title: string;
   subtitle: string;
 }
 
-export function CreatePageHeader({ title, subtitle }: CreatePageHeaderProps) {
+export function CreatePageHeader({ title, subtitle}: CreatePageHeaderProps) {
+  
+  const [credits, setCredits] = useState(0);  
+
+
+  useEffect(() => {
+    const fetchCredits = async () => {
+      const response = await fetch('/api/user/credits');
+      if (!response.ok) throw new Error('Failed to fetch user data');
+      const data = await response.json();
+      setCredits(data.current);
+    };
+
+    fetchCredits(); // Call the async function
+  }, [])
+  
+  
   return (
     <div className="flex items-center justify-between mb-8">
       <div className="flex px-4 gap-2">
@@ -21,7 +38,7 @@ export function CreatePageHeader({ title, subtitle }: CreatePageHeaderProps) {
       </div>
      
       <div className="flex items-center gap-5">
-        <span className="text-purple-200 font-bold text-xl">10 credits</span>
+        <span className="text-purple-200 font-bold text-xl">{credits} credits</span>
         <Button
             className={cn(
               "bg-gradient-to-r from-[#d550ac] to-[#7773FA] hover:opacity-90 transition-all",

@@ -1,4 +1,5 @@
-import  { useState } from 'react';
+"use client"
+import { useState } from 'react';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -9,6 +10,7 @@ import { ScriptSelector } from "./ScriptSelector";
 import { generateScripts } from '@/lib/api/scriptApi';
 import { Script } from '@/lib/types/script';
 import Image from 'next/image';
+import {MediaUpload } from '@/components/ui/file-upload';
 
 interface ProductFormProps {
   productInfo: {
@@ -28,6 +30,12 @@ export function ProductForm({ productInfo, screenshot, onBack, screenshot_data }
   const [formData, setFormData] = useState(productInfo);
   const [isGeneratingScripts, setIsGeneratingScripts] = useState(false);
   const [scripts, setScripts] = useState<Script[]>([]);
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
+  const handleFileUpload = (files: File[]) => {
+    setFiles(files);
+    console.log(files);
+  };
 
   const [scriptData, setscriptData] = useState({
     product_info: {
@@ -37,8 +45,7 @@ export function ProductForm({ productInfo, screenshot, onBack, screenshot_data }
     language: "English", // Default value
     tone: "professional", // Default value
     target_audience: "diabetes patients", // Default value
-  }
-  )
+  });
 
   const formFields = [
     { key: 'product_name', rows: 2 },
@@ -48,12 +55,37 @@ export function ProductForm({ productInfo, screenshot, onBack, screenshot_data }
     { key: 'features', rows: 3 },
     { key: 'pricing', rows: 2 }
   ];
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      setUploadedFile(event.target.files[0]);
+    }
+  };
+
+
   const handleNext = async () => {
     setIsGeneratingScripts(true);
-    // updateVideoData({
-    //   screenshot_path: screenshot
-    // });
     try {
+      if (files.length > 0) {
+        const formData = new FormData();
+        files.forEach((file: File) => {
+          formData.append("files", file);
+        });
+        formData.append("projectId", "sample"); // Replace with your actual project ID
+  
+        // Send files to the API to be uploaded to Azure Blob Storage
+        const response = await fetch("/api/fileupload", {
+          method: "POST",
+          body: formData,
+        });
+  
+        const result = await response.json();
+        if (result.success) {
+          alert("Files uploaded successfully!");
+        } else {
+          alert("Failed to upload files.");
+        }
+      }
       const response = await generateScripts(scriptData);
       setScripts(response.scripts);
     } catch (error) {
@@ -87,10 +119,6 @@ export function ProductForm({ productInfo, screenshot, onBack, screenshot_data }
       <BackgroundGradient className="rounded-[22px] p-1">
         <Card className="border-0 p-6 sm:p-8 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           <h1 className="text-center text-2xl sm:text-3xl mb-8 font-bold text-foreground/90">Product Details</h1>
-          
-          {/* <AnimatedGradientText className="text-center text-2xl sm:text-3xl mb-8 font-bold from-blue-300 via-blue-600 to-purple-300">
-            
-          </AnimatedGradientText> */}
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div className="space-y-6">
@@ -105,6 +133,14 @@ export function ProductForm({ productInfo, screenshot, onBack, screenshot_data }
                     className="w-full resize-none border border-purple-600/40 rounded-lg focus:ring-2 focus:ring-purple-500"
                     rows={rows}
                   />
+                  {key === 'problem_their_solving' && (
+                    <div className="space-y-2">
+                      <div className="w-full max-w-4xl mx-auto min-h-96 border border-dashed bg-white dark:bg-black border-neutral-200 dark:border-neutral-800 rounded-lg">
+                      <MediaUpload onChange={handleFileUpload} />
+                    </div>
+
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -126,6 +162,7 @@ export function ProductForm({ productInfo, screenshot, onBack, screenshot_data }
                   <label className="text-sm font-medium text-foreground/90">
                     {key.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
                   </label>
+                  
                   <Textarea
                     value={formData[key as keyof typeof formData]}
                     onChange={(e) => setFormData({...formData, [key]: e.target.value})}
@@ -147,6 +184,7 @@ export function ProductForm({ productInfo, screenshot, onBack, screenshot_data }
             </Button>
             <Button
               onClick={handleNext}
+              
               className="bg-gradient-to-r from-[#d550ac] to-[#7773FA]  text-white hover:opacity-90 transition-opacity"
             >
               Next

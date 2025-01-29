@@ -91,6 +91,7 @@ function CreateVideoPageContent({ projectId }: { projectId?: string | null }) {
             screenshot={productData.screenshot.data}
             onBack={() => setProductData(null)}
             screenshot_data={productData.screenshot.data}
+            projectId={projectId}
           />
         ) : (
           <div className="max-w-3xl mx-auto mt-12 sm:mt-24">

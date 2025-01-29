@@ -11,6 +11,8 @@ import { LoadingSpinner } from './LoadingSpinner';
 import { MultiStepLoader as Loader } from "../ui/multi-step-loader";
 import { useSearchParams } from 'next/navigation';
 import { Toaster, toast } from 'sonner';
+import { getSignedInUser } from '@/lib/database/utils';
+
 
 // In your JSX
 <Toaster position="top-right" richColors />
@@ -112,6 +114,7 @@ export function CreatorSelector({ creators, voices, onBack, onNext,screenshot_da
 
     const searchParams = useSearchParams();
     const projectId = searchParams.get('projectId');
+    
   
     const saveVideoToProject = async (videoUrl: string) => {
       try {
@@ -126,6 +129,7 @@ export function CreatorSelector({ creators, voices, onBack, onNext,screenshot_da
             description: selectedScript,
             blobUrl: videoUrl,
             status: 'COMPLETED'
+            
           }),
         });
   
@@ -158,7 +162,11 @@ export function CreatorSelector({ creators, voices, onBack, onNext,screenshot_da
         });
         
         try {
-
+          const userId=await getSignedInUser();
+          if (!userId) {
+            toast.error('Please sign in to generate videos');
+            return;
+          }
           const checkResponse = await fetch('/api/user/check-subscription');
 
           console.log(checkResponse)
@@ -180,7 +188,11 @@ export function CreatorSelector({ creators, voices, onBack, onNext,screenshot_da
             }
             return;
         }
-          const response= await generateVideo(videoData);
+        if(!projectId){
+          toast.error('Please create a project');
+          return;
+        }
+          const response= await generateVideo(videoData,projectId,userId.id);
           // const response="https://aisaasvalidator.blob.core.windows.net/video-gpt/generated_videos/tmp1419zo3d.mp4"
 
           // Save video to database

@@ -12,7 +12,7 @@ const ALLOWED_FILE_TYPES = [
 ];
 
 // Max file size (10MB)
-const MAX_FILE_SIZE = 10 * 1024 * 1024;
+const MAX_FILE_SIZE = 200 * 1024 * 1024;
 
 export async function POST(request: NextRequest) {
   try {

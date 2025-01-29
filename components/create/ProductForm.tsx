@@ -24,9 +24,10 @@ interface ProductFormProps {
   screenshot: string;
   onBack: () => void;
   screenshot_data: string;
+  projectId?: string | null;
 }
 
-export function ProductForm({ productInfo, screenshot, onBack, screenshot_data }: ProductFormProps) {
+export function ProductForm({ productInfo, screenshot, onBack, screenshot_data,projectId }: ProductFormProps) {
   const [formData, setFormData] = useState(productInfo);
   const [isGeneratingScripts, setIsGeneratingScripts] = useState(false);
   const [scripts, setScripts] = useState<Script[]>([]);
@@ -71,7 +72,7 @@ export function ProductForm({ productInfo, screenshot, onBack, screenshot_data }
         files.forEach((file: File) => {
           formData.append("files", file);
         });
-        formData.append("projectId", "sample"); // Replace with your actual project ID
+        formData.append("projectId", projectId); // Replace with your actual project ID
   
         // Send files to the API to be uploaded to Azure Blob Storage
         const response = await fetch("/api/fileupload", {

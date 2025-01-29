@@ -25,14 +25,14 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
 
 
 
-export async function generateVideo (videoData: VideoData){
+export async function generateVideo (videoData: VideoData,projectId: string,userId:string){
   try {
     
 
     // const response = await fetch(`${API_URL}/api/generate-video`, {
     //   method: 'POST',
     //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(videoData)
+    //   body: JSON.stringify(videoData,projectId,userId)
     // });
     
     // const data = await response.json();

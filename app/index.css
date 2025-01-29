@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  /* Navigation Links */
+  .nav-link {
+    @apply px-3 py-2 rounded-full text-sm font-medium text-gray-700 
+      hover:text-landing_primary-600 hover:bg-landing_primary-50 
+      dark:text-gray-300 dark:hover:text-landing_primary-400 
+      dark:hover:bg-landing_primary-900/30 transition-all duration-200;
+  }
+
+  .mobile-nav-link {
+    @apply block px-4 py-3 rounded-full text-base font-medium text-gray-700 
+      hover:text-landing_primary-600 hover:bg-landing_primary-50 
+      dark:text-gray-300 dark:hover:text-landing_primary-400 
+      dark:hover:bg-landing_primary-900/30 transition-all duration-200;
+  }
+}
+
+/* Smooth scrolling for better navigation */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Hide scrollbar */
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* Dark mode color scheme */
+.dark {
+  color-scheme: dark;
+}
+
+/* Improved focus styles for accessibility */
+*:focus-visible {
+  @apply outline-none ring-2 ring-landing_primary-500 ring-offset-2 dark:ring-offset-gray-900;
+}
+
+/* Mobile typography optimizations */
+@media (max-width: 640px) {
+  html {
+    font-size: 14px;
+  }
+}

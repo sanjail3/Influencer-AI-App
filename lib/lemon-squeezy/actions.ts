@@ -19,12 +19,16 @@ import {
     LsWebhookEvent,
 } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
+import { Resend } from 'resend';
+import { SubscriptionCreatedTemplate } from '@components/email/SubscriptionCreatedTemplate';
 
 import { webhookHasData, webhookHasMeta } from './typeguards';
 
 /**
  * This action will create a checkout on Lemon Squeezy.
  */
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 export async function getCheckoutURL(variantId: number, embed = false) {
     configureLemonSqueezy();
 
@@ -91,10 +95,15 @@ export async function syncPlans() {
     }
 
     // Fetch products from the Lemon Squeezy store.
+    console.log('Fetching products...');
+    console.log(process.env.LEMONSQUEEZY_STORE_ID);
     const products = await listProducts({
         filter: { storeId: process.env.LEMONSQUEEZY_STORE_ID },
         include: ['variants'],
     });
+    
+    console.log('Products: ');
+    console.log(products);
 
     // Loop through all the variants.
     const allVariants = products.data?.included as
@@ -192,9 +201,7 @@ export async function storeWebhookEvent(
     });
 
     return event;
-}
-
-/**
+}/**
  * This action will process a webhook event in the database.
  */
 export async function processWebhookEvent(webhookEvent: LsWebhookEvent) {
@@ -274,6 +281,31 @@ export async function processWebhookEvent(webhookEvent: LsWebhookEvent) {
                     processingError = `Failed to upsert Subscription #${updateData.lemonSqueezyId} to the database.`;
                     console.error(error);
                 }
+                if (webhookEvent.eventName === 'subscription_created') {
+                    try {
+                        const { data, error } = await resend.emails.send({
+                            from: 'Acme <onboarding@resend.dev>', // Replace with your email
+                            to: "sanjaisam333@gmail.com",    //updateData.email
+                            subject: 'Subscription Confirmation',
+                            react: SubscriptionCreatedTemplate({
+                                name: updateData.name,
+                                planName: plan[0].name,
+                                price: updateData.price,
+                                interval: plan[0].interval,
+                                intervalCount: plan[0].intervalCount,
+                            }),
+                        });
+
+                        if (error) {
+                            console.error('Error sending subscription confirmation email:', error);
+                        } else {
+                            console.log('Subscription confirmation email sent:', data);
+                        }
+                    } catch (emailError) {
+                        console.error('Failed to send subscription confirmation email:', emailError);
+                    }
+                }
+            
             }
         } else if (webhookEvent.eventName.startsWith('order_')) {
             // Save orders; eventBody is a "Order"
@@ -429,7 +461,7 @@ export async function unpauseUserSubscription(id: string) {
     }
 
     const returnedSub = await updateSubscription(id, {
-        
+
     });
 
     // Update the db
@@ -447,7 +479,7 @@ export async function unpauseUserSubscription(id: string) {
             },
         });
     } catch (error) {
-        throw new Error(`Failed to pause Subscription #${id} in the database.`);
+        throw new Error(`Failed to unpause Subscription #${id} in the database.`);
     }
 
     revalidatePath('/');

@@ -38,6 +38,19 @@ const config: Config = {
           DEFAULT: 'hsl(var(--primary))',
           foreground: 'hsl(var(--primary-foreground))',
         },
+        landing_primary: {
+          50: '#f5f0ff',
+          100: '#ede5ff',
+          200: '#dccbff',
+          300: '#c4a3ff',
+          400: '#ab7aff',
+          500: '#9250ff',
+          600: '#8833ff',
+          700: '#7719ff',
+          800: '#6600ff',
+          900: '#5500d4',
+        },
+        
         secondary: {
           DEFAULT: 'hsl(var(--secondary))',
           foreground: 'hsl(var(--secondary-foreground))',
@@ -107,11 +120,31 @@ const config: Config = {
             color: "#fff",
             textShadow: "2px 2px 0px #00ffff, -2px -2px 0px #ff00ff",
           },
+          fadeUp: {
+            "0%": "opacity: 0; transform: translateY(20px);",
+            "100%": "opacity: 1; transform: translateY(0);",
+        },
+        fadeDown: {
+            "0%": "opacity: 0; transform: translateY(-20px);",
+            "100%": "opacity: 1; transform: translateY(0);",
+        },
+        "marquee-x": {
+            from: "transform: translateX(0);",
+            to: "transform: translateX(calc(-100% - var(--gap)));",
+        },
+        "marquee-y": {
+            from: "transform: translateY(0);",
+            to: "transform: translateY(calc(-100% - var(--gap)));",
+        },
         },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+        'fade-up': 'fadeUp 0.5s ease-out forwards',
+        'fade-down': 'fadeDown 0.5s ease-out forwards',
+        "marquee-horizontal": "marquee-x var(--duration) infinite linear",
+        "marquee-vertical": "marquee-y var(--duration) linear infinite",
       },
       boxShadow: {
         glow: "0 0 20px rgba(255, 204, 112, 0.7), 0 0 40px rgba(200, 80, 192, 0.5), 0 0 60px rgba(65, 88, 208, 0.3)",

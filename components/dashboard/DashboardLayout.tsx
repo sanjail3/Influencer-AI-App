@@ -30,15 +30,13 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
               >
                 <Menu className="h-6 w-6" />
               </Button>
-              <Link href="/dashboard"> 
-              <div className="flex items-center gap-2">
-                {/* Wrap the div with Link */}
+              <Link href="/dashboard">
+                <div className="flex items-center gap-2">
                   <Rocket className="h-6 w-6 text-purple-600" />
                   <h2 className="text-2xl font-bold bg-gradient-to-r from-[#d550ac] to-[#7773FA] bg-clip-text text-transparent hidden md:block">
                     Influencer AI
                   </h2>
-                
-              </div>
+                </div>
               </Link>
             </div>
             <div className="flex items-center space-x-4">
@@ -60,7 +58,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         {/* Main Content */}
         <div
           className={`transition-all duration-300 pt-16 ${
-            collapsed ? "ml-20" : "ml-64"
+            collapsed ? "ml-20" : "ml-0 md:ml-64"
           }`}
         >
           <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -70,6 +68,6 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       </div>
     </SidebarContext.Provider>
   );
-}
+};
 
 export default DashboardLayout;

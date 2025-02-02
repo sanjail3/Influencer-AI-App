@@ -39,6 +39,7 @@ export function SubscriptionsActionsDropdown({
     }
 
     const isPaused = userSubscription.isPaused;
+    console.log(isPaused)
 
     return (
         <>
@@ -74,6 +75,8 @@ export function SubscriptionsActionsDropdown({
                         <DropdownMenuItem
                             onClick={async () => {
                                 setLoading(true);
+                                console.log("Inside unpause")
+                                console.log(userSubscription.lemonSqueezyId)
                                 await unpauseUserSubscription(
                                     userSubscription.lemonSqueezyId,
                                 ).then(() => {

@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, forwardRef, useRef } from "react";
 import { HTMLMotionProps, motion, useSpring, useTransform } from "framer-motion";
 import Balancer from "react-wrap-balancer";
 
@@ -14,72 +14,72 @@ interface FeatureCardProps extends HTMLMotionProps<"div"> {
   zIndexOffset?: number;
 }
 
-function FeatureCard({ feature, className, zIndexOffset = 0, ...props }: FeatureCardProps) {
-  const { title, category, videoUrl, posterUrl } = feature;
-  const springValue = useSpring(0, {
-    bounce: 0,
-  });
-  const zIndex = useTransform(springValue, (value) => +Math.floor(value * 10) + 10 + zIndexOffset);
-  const scale = useTransform(springValue, [0, 1], [1, 1.1]);
+const FeatureCard = forwardRef<HTMLDivElement, FeatureCardProps>(
+  ({ feature, className, zIndexOffset = 0, ...props }, ref) => {
+    const { title, category, videoUrl, posterUrl } = feature;
+    const springValue = useSpring(0, { bounce: 0 });
+    const zIndex = useTransform(springValue, (value) => +Math.floor(value * 10) + 10 + zIndexOffset);
+    const scale = useTransform(springValue, [0, 1], [1, 1.1]);
 
-  const content = (
-    <>
-      <video
-        src={videoUrl}
-        poster={posterUrl}
-        className="-z-1 absolute inset-0 h-full w-full object-cover"
-        autoPlay
-        muted
-        loop
-        playsInline
-      />
-      <div className="z-10 flex h-full w-full flex-col gap-4 bg-gradient-to-t from-zinc-800/50 from-15% to-transparent p-6">
-        <small className="inline w-fit rounded-xl bg-orange-950 bg-opacity-50 px-4 py-2 text-sm font-medium leading-none text-white">
-          {category}
-        </small>
+    if(!ref){
+      return ;
+    }
 
-        <div className="flex-1" />
-        <h3 className="rounded-xl bg-blue-950 bg-opacity-40 p-6 text-xl font-bold leading-none text-white backdrop-blur-sm">
-          {title}
-        </h3>
-      </div>
-    </>
-  );
+    const content = (
+      <>
+        <video
+          src={videoUrl}
+          poster={posterUrl}
+          className="-z-1 absolute inset-0 h-full w-full object-cover"
+          autoPlay
+          muted
+          loop
+          playsInline
+        />
+        <div className="z-10 flex h-full w-full flex-col gap-4 bg-gradient-to-t from-zinc-800/50 from-15% to-transparent p-6">
+          <small className="inline w-fit rounded-xl bg-orange-950 bg-opacity-50 px-4 py-2 text-sm font-medium leading-none text-white">
+            {category}
+          </small>
 
-  const containerClassName = cn(
-    "relative flex h-[30rem] w-80 flex-col overflow-hidden rounded-2xl shadow-lg transition-shadow duration-300 ease-in-out hover:shadow-2xl",
-    className
-  );
+          <div className="flex-1" />
+          <h3 className="rounded-xl bg-blue-950 bg-opacity-40 p-6 text-xl font-bold leading-none text-white backdrop-blur-sm">
+            {title}
+          </h3>
+        </div>
+      </>
+    );
 
-  return (
-    <>
-      <motion.div
-        onMouseEnter={() => springValue.set(1)}
-        onMouseLeave={() => springValue.set(0)}
-        style={{
-          zIndex,
-          scale,
-        }}
-        className={cn(containerClassName, "hidden sm:flex")}
-        {...props}
-      >
-        {content}
-      </motion.div>
-      <motion.div
-        initial={{ y: 100 }}
-        whileInView={{ y: 0, transition: { duration: 0.5 } }}
-        className={cn(containerClassName, "flex sm:hidden")}
-      >
-        {content}
-      </motion.div>
-    </>
-  );
-}
+    const containerClassName = cn(
+      "relative flex h-[30rem] w-80 flex-col overflow-hidden rounded-2xl shadow-lg transition-shadow duration-300 ease-in-out hover:shadow-2xl",
+      className
+    );
+    
+
+    return (
+      <>
+       <div>
+       {content}
+       </div>
+         
+          
+        
+        <motion.div
+          initial={{ y: 100 }}
+          whileInView={{ y: 0, transition: { duration: 0.5 } }}
+          className={cn(containerClassName, "flex sm:hidden")}
+        >
+          {content}
+        </motion.div>
+      </>
+    );
+  }
+);
 
 export default function ProductFeatures() {
   const cardWidth = 80 * 4; // w-80 x 4
   const angle = 6;
   const yOffset = 50;
+  const cardRef = useRef<HTMLDivElement>(null);
 
   return (
     <section className="storybook-fix flex w-full flex-col items-center gap-8 py-16">
@@ -90,6 +90,7 @@ export default function ProductFeatures() {
 
       <div className="relative flex w-full flex-wrap justify-center gap-16 px-6 py-16 sm:flex-row sm:gap-8 lg:max-w-screen-xl">
         <FeatureCard
+          ref={cardRef}
           feature={{
             category: "Vases",
             videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4",

@@ -3,6 +3,7 @@ import Subscriptions  from '@/components/lemon-squeezy/Subscriptions';
 import { prisma } from '@/lib/db';
 import { getUserSubscriptions, syncPlans } from '@/lib/lemon-squeezy/actions';
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
+import "../globals.css"
 
 export default async function MyAccount() {
     

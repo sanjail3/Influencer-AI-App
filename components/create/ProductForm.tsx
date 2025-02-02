@@ -4,13 +4,12 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { BackgroundGradient } from "@/components/ui/background-gradient";
-import AnimatedGradientText from '../ui/gradient-text';
 import { LoadingSpinner } from "./LoadingSpinner";
 import { ScriptSelector } from "./ScriptSelector";
 import { generateScripts } from '@/lib/api/scriptApi';
 import { Script } from '@/lib/types/script';
 import Image from 'next/image';
-import {MediaUpload } from '@/components/ui/file-upload';
+import { MediaUpload } from '@/components/ui/file-upload';
 
 interface ProductFormProps {
   productInfo: {
@@ -27,42 +26,33 @@ interface ProductFormProps {
   projectId?: string | null;
 }
 
-export function ProductForm({ productInfo, screenshot, onBack, screenshot_data,projectId }: ProductFormProps) {
+export function ProductForm({ productInfo, screenshot, onBack, screenshot_data, projectId }: ProductFormProps) {
   const [formData, setFormData] = useState(productInfo);
   const [isGeneratingScripts, setIsGeneratingScripts] = useState(false);
   const [scripts, setScripts] = useState<Script[]>([]);
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [files, setFiles] = useState<File[]>([]);
+
   const handleFileUpload = (files: File[]) => {
     setFiles(files);
     console.log(files);
   };
 
   const [scriptData, setscriptData] = useState({
-    product_info: {
-      ...productInfo, // The main product data
-    },
-    duration: 30, // Default value
-    language: "English", // Default value
-    tone: "professional", // Default value
-    target_audience: "diabetes patients", // Default value
+    product_info: { ...productInfo },
+    duration: 30,
+    language: "English",
+    tone: "professional",
+    target_audience: "diabetes patients",
   });
 
   const formFields = [
-    { key: 'product_name', rows: 2 },
-    { key: 'product_description', rows: 4 },
-    { key: 'problem_their_solving', rows: 3 },
-    { key: 'unique_selling_point', rows: 3 },
-    { key: 'features', rows: 3 },
-    { key: 'pricing', rows: 2 }
+    { key: 'product_name', rows: 2, placeholder: 'Enter the product name...' },
+    { key: 'product_description', rows: 4, placeholder: 'Describe the product...' },
+    { key: 'problem_their_solving', rows: 3, placeholder: 'What problem does it solve?...' },
+    { key: 'unique_selling_point', rows: 3, placeholder: 'What makes it unique?...' },
+    { key: 'features', rows: 3, placeholder: 'List the key features...' },
+    { key: 'pricing', rows: 2, placeholder: 'Enter the pricing details...' }
   ];
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      setUploadedFile(event.target.files[0]);
-    }
-  };
-
 
   const handleNext = async () => {
     setIsGeneratingScripts(true);
@@ -72,14 +62,13 @@ export function ProductForm({ productInfo, screenshot, onBack, screenshot_data,p
         files.forEach((file: File) => {
           formData.append("files", file);
         });
-        formData.append("projectId", projectId); // Replace with your actual project ID
-  
-        // Send files to the API to be uploaded to Azure Blob Storage
+        formData.append("projectId", projectId || "");
+
         const response = await fetch("/api/fileupload", {
           method: "POST",
           body: formData,
         });
-  
+
         const result = await response.json();
         if (result.success) {
           alert("Files uploaded successfully!");
@@ -106,9 +95,9 @@ export function ProductForm({ productInfo, screenshot, onBack, screenshot_data,p
 
   if (scripts.length > 0) {
     return (
-      <ScriptSelector 
-        scripts={scripts} 
-        onBack={() => setScripts([])} 
+      <ScriptSelector
+        scripts={scripts}
+        onBack={() => setScripts([])}
         onRegenerate={handleNext}
         screenshot_data={screenshot_data}
       />
@@ -123,23 +112,23 @@ export function ProductForm({ productInfo, screenshot, onBack, screenshot_data,p
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div className="space-y-6">
-              {formFields.slice(0, 3).map(({ key, rows }) => (
+              {formFields.slice(0, 3).map(({ key, rows, placeholder }) => (
                 <div key={key} className="space-y-2">
                   <label className="text-sm font-medium font-bold">
                     {key.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
                   </label>
                   <Textarea
                     value={formData[key as keyof typeof formData]}
-                    onChange={(e) => setFormData({...formData, [key]: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, [key]: e.target.value })}
                     className="w-full resize-none border border-purple-600/40 rounded-lg focus:ring-2 focus:ring-purple-500"
                     rows={rows}
+                    placeholder={placeholder}
                   />
                   {key === 'problem_their_solving' && (
                     <div className="space-y-2">
-                      <div className="w-full max-w-4xl mx-auto min-h-96 border border-dashed bg-white dark:bg-black border-neutral-200 dark:border-neutral-800 rounded-lg">
-                      <MediaUpload onChange={handleFileUpload} />
-                    </div>
-
+                      <div className="w-full max-w-4xl mx-auto min-h-48 border border-dashed bg-white dark:bg-black border-neutral-200 dark:border-neutral-800 rounded-lg">
+                        <MediaUpload onChange={handleFileUpload} />
+                      </div>
                     </div>
                   )}
                 </div>
@@ -158,24 +147,24 @@ export function ProductForm({ productInfo, screenshot, onBack, screenshot_data,p
                 </div>
               </div>
 
-              {formFields.slice(3).map(({ key, rows }) => (
+              {formFields.slice(3).map(({ key, rows, placeholder }) => (
                 <div key={key} className="space-y-2">
                   <label className="text-sm font-medium text-foreground/90">
                     {key.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
                   </label>
-                  
                   <Textarea
                     value={formData[key as keyof typeof formData]}
-                    onChange={(e) => setFormData({...formData, [key]: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, [key]: e.target.value })}
                     className="w-full resize-none border border-purple-600/40 rounded-lg focus:ring-2 focus:ring-purple-500"
                     rows={rows}
+                    placeholder={placeholder}
                   />
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="flex justify-between mt-8">
+          <div className="flex flex-col sm:flex-row justify-between gap-4 mt-8">
             <Button
               variant="ghost"
               onClick={onBack}
@@ -185,8 +174,7 @@ export function ProductForm({ productInfo, screenshot, onBack, screenshot_data,p
             </Button>
             <Button
               onClick={handleNext}
-              
-              className="bg-gradient-to-r from-[#d550ac] to-[#7773FA]  text-white hover:opacity-90 transition-opacity"
+              className="bg-gradient-to-r from-[#d550ac] to-[#7773FA] text-white hover:opacity-90 transition-opacity"
             >
               Next
             </Button>

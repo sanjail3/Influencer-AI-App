@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
@@ -51,10 +53,10 @@ const CurvedDashboardHero = () => {
     <div className="w-full p-4">
       <div className="relative mx-auto max-w-5xl overflow-hidden rounded-3xl bg-gradient-to-br from-purple-900 via-purple-800 to-purple-600 shadow-xl">
         {/* Decorative elements */}
-        <SparkleElement className="absolute left-12 top-12" delay={0} />
-        <SparkleElement className="absolute right-16 top-24" delay={0.5} />
-        <SparkleElement className="absolute bottom-16 left-24" delay={1} />
-        <SparkleElement className="absolute bottom-24 right-12" delay={1.5} />
+        <SparkleElement className="absolute left-4 top-4 md:left-12 md:top-12" delay={0} />
+        <SparkleElement className="absolute right-4 top-8 md:right-16 md:top-24" delay={0.5} />
+        <SparkleElement className="absolute bottom-8 left-8 md:bottom-16 md:left-24" delay={1} />
+        <SparkleElement className="absolute bottom-12 right-4 md:bottom-24 md:right-12" delay={1.5} />
         
         {/* Sprinkles */}
         <Sprinkle className="left-1/4 top-1/3" delay={0.2} />
@@ -78,15 +80,15 @@ const CurvedDashboardHero = () => {
         <div className="absolute right-1/4 top-1/2 h-48 w-48 animate-pulse rounded-full bg-pink-400/20 blur-3xl" />
 
         {/* Content container */}
-        <div className="relative z-10 flex flex-col items-center px-6 py-12 text-center">
+        <div className="relative z-10 flex flex-col items-center px-4 py-8 text-center md:px-6 md:py-12">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 20 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="mb-4 text-3xl font-bold tracking-tight text-white md:text-4xl lg:text-5xl"
+            className="mb-4 text-2xl font-bold tracking-tight text-white md:text-4xl lg:text-5xl"
           >
             <span className="bg-gradient-to-r from-purple-200 to-pink-200 bg-clip-text text-transparent">
-                 Your brand's storytelling, simplified!
+              Your brand's storytelling, simplified!
             </span>
           </motion.h1>
 
@@ -94,9 +96,9 @@ const CurvedDashboardHero = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 20 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="mb-6 max-w-xl text-base text-purple-100 md:text-lg"
+            className="mb-6 max-w-xl text-sm text-purple-100 md:text-base lg:text-lg"
           >
-           Boost your brand’s impact and build lasting trust!
+            Boost your brand’s impact and build lasting trust!
           </motion.p>
 
           <motion.div
@@ -105,7 +107,7 @@ const CurvedDashboardHero = () => {
             transition={{ duration: 0.8, delay: 0.6 }}
             className="relative"
           >
-            <Button className="rounded-full bg-gradient-to-r from-[#d550ac] to-[#7773FA]  px-6 py-2 text-base font-semibold text-white hover:from-purple-600 hover:to-pink-600">
+            <Button className="rounded-full bg-gradient-to-r from-[#d550ac] to-[#7773FA] px-6 py-2 text-sm font-semibold text-white hover:from-purple-600 hover:to-pink-600 md:text-base">
               Try Video Ads
             </Button>
             <SparkleElement className="absolute -right-6 -top-6" delay={2} />
@@ -115,10 +117,9 @@ const CurvedDashboardHero = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 20 }}
             transition={{ duration: 0.8, delay: 0.8 }}
-            className="mt-8 grid grid-cols-4 gap-4 md:grid-cols-7"
+            className="mt-8 grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-7"
           >
             {[
-        
               { icon: "📈", label: "AI Content analyser" },
               { icon: "🎥", label: "AI Short Engine" },
               { icon: "🎬", label: "AI Video Ads" },

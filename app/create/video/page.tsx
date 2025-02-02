@@ -13,6 +13,7 @@ import SparklesText from "@/components/ui/sparkles-text";
 import AiButton from "@/components/ui/ai-button";
 import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
+import "./globals.css"
 
 // Main component logic
 function CreateVideoPageContent({ projectId }: { projectId?: string | null }) {

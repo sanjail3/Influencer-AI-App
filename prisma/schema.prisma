@@ -37,10 +37,11 @@ model Project {
   createdAt   DateTime  @default(now())
   projectType String   @default("DEFAULT")
   updatedAt   DateTime  @updatedAt
+  taskId      String?
 
   // Relations
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  videos      Video[]
+  videos      Video[]   @relation("ProjectToVideo")
 
   @@index([userId])
 }
@@ -60,7 +61,7 @@ model Video {
 
   // Relations
   user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  project     Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  project     Project     @relation("ProjectToVideo", fields: [projectId], references: [id])
 
   @@index([userId])
   @@index([projectId])

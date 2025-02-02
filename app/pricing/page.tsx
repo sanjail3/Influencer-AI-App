@@ -1,13 +1,13 @@
 "use client";
 
-import { syncPlans } from '@/lib/lemon-squeezy/actions';
 import { useState, useEffect } from "react";
 import { Pricing } from "@/components/ui/pricing";
-import { SubscriptionPlan, } from "@prisma/client";
+import { SubscriptionPlan } from "@prisma/client";
+import "./globals.css";
 
 interface PricingPlan {
   name: string;
-  price: string;
+  monthlyPrice: string;
   yearlyPrice: string;
   period: string;
   features: string[];
@@ -15,25 +15,41 @@ interface PricingPlan {
   buttonText: string;
   href: string;
   isPopular: boolean;
-  variantId: number;
+  monthlyVariantId: number;
+  yearlyVariantId: number;
 }
 
+// Fetch subscription plans from the API
 async function fetchSubscriptionPlans() {
   try {
-    const response = await fetch('/api/subscription-plans'); // You'll need to create this API route
+    const response = await fetch('/api/subscription-plans'); // Fetch plans from the API
     const plans = await response.json();
-    return plans;
+
+    console.log(plans);
+
+    // Group plans by interval
+    const groupedPlans = plans.reduce((acc: Record<string, SubscriptionPlan[]>, plan: SubscriptionPlan) => {
+      const interval = plan.interval;
+      if (interval == null) return acc; // Skip if interval is null or undefined
+      if (!acc[interval]) {
+        acc[interval] = [];
+      }
+      acc[interval].push(plan);
+      return acc;
+    }, {});
+
+    console.log(groupedPlans);
+
+    return groupedPlans;
   } catch (error) {
     console.error('Error fetching subscription plans:', error);
-    return [];
+    return { month: [], year: [] }; // Return empty groups if there's an error
   }
 }
 
 // Helper function to transform database plans to UI format
-function transformPlansToUIFormat(dbPlans: SubscriptionPlan[]): PricingPlan[] {
-  
-  
-    const planFeatureMap = {
+function transformPlansToUIFormat(groupedPlans: { month: SubscriptionPlan[], year: SubscriptionPlan[] }): PricingPlan[] {
+  const planFeatureMap = {
     starter: [
       "Up to 10 projects",
       "Basic analytics",
@@ -62,14 +78,14 @@ function transformPlansToUIFormat(dbPlans: SubscriptionPlan[]): PricingPlan[] {
     ],
   };
 
-  return dbPlans.map((plan) => {
+  // Transform monthly plans
+  const monthlyPlans = groupedPlans.month.map((plan): any => {
     const planKey = plan.name.toLowerCase() as keyof typeof planFeatureMap;
     const basePrice = parseFloat(plan.price);
-    
+
     return {
       name: plan.productName.toUpperCase(),
       price: basePrice.toString(),
-      yearlyPrice: (basePrice * 0.8).toString(), // 20% discount for yearly
       period: "per month",
       features: planFeatureMap[planKey] || [],
       description: plan.name === "professional" 
@@ -83,8 +99,38 @@ function transformPlansToUIFormat(dbPlans: SubscriptionPlan[]): PricingPlan[] {
       href: plan.name === "Enterprise" ? "/contact" : "/sign-up",
       isPopular: plan.name === "professional",
       variantId: plan.variantId,
+      interval: plan.interval,
     };
   });
+
+  // Transform yearly plans
+  const yearlyPlans = groupedPlans.year.map((plan) => {
+    const planKey = plan.name.toLowerCase() as keyof typeof planFeatureMap;
+    const basePrice = parseFloat(plan.price);
+
+    return {
+      name: plan.productName.toUpperCase(),
+      price: basePrice.toString(),
+      period: "per year",
+      features: planFeatureMap[planKey] || [],
+      description: plan.name === "professional" 
+        ? "Ideal for growing teams and businesses"
+        : plan.name === "enterprise"
+          ? "For large organizations with specific needs"
+          : "Perfect for individuals and small projects",
+      buttonText: plan.name === "enterprise" 
+        ? "Contact Sales" 
+        : "Get Started",
+      href: plan.name === "Enterprise" ? "/contact" : "/sign-up",
+      isPopular: plan.name === "professional",
+      variantId: plan.variantId,
+      interval: plan.interval,
+    };
+  });
+
+  console.log(monthlyPlans, yearlyPlans);
+
+  return [...monthlyPlans, ...yearlyPlans];
 }
 
 function PricingPage() {
@@ -95,8 +141,9 @@ function PricingPage() {
   useEffect(() => {
     async function loadPlans() {
       try {
-        const dbPlans = await fetchSubscriptionPlans();
-        const transformedPlans = transformPlansToUIFormat(dbPlans);
+        const groupedPlans = await fetchSubscriptionPlans();
+        const transformedPlans = transformPlansToUIFormat(groupedPlans);
+        console.log(transformedPlans);
         setPlans(transformedPlans);
       } catch (err) {
         setError("Failed to load subscription plans");
@@ -117,7 +164,12 @@ function PricingPage() {
   }
 
   return (
-    <div className="h-[800px] overflow-y-auto rounded-lg create-page-background">
+    <div 
+      className="h-[800px] overflow-y-auto"
+      style={{
+        background: `radial-gradient(ellipse at top, rgba(129, 8, 172, 0.4), black)`,
+      }}
+    >
       <Pricing
         plans={plans}
         title="Simple, Transparent Pricing"

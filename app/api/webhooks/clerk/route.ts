@@ -1,8 +1,11 @@
 import { prisma } from '@/lib/db';
 import type { WebhookEvent } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
+import { Resend } from 'resend';
+import { WelcomeTemplate } from '@components/email/Welcome-template';
 
-// Clerk Webhook: create or delete a user in the database by Clerk ID
+const resend = new Resend(process.env.RESEND_API_KEY);
+
 export async function POST(req: Request) {
     try {
         // Parse the Clerk Webhook event
@@ -19,7 +22,7 @@ export async function POST(req: Request) {
         let user = null;
         switch (evt.type) {
             case 'user.created': {
-                const { email_addresses = [] } = evt.data;
+                const { email_addresses = [], first_name } = evt.data;
                 const email = email_addresses?.[0]?.email_address ?? '';
 
                 if (!email)
@@ -28,6 +31,7 @@ export async function POST(req: Request) {
                         { status: 400 },
                     );
 
+                // Upsert the user in the database
                 user = await prisma.user.upsert({
                     where: {
                         clerkId: clerkUserId,
@@ -42,6 +46,27 @@ export async function POST(req: Request) {
                         email,
                     },
                 });
+
+                console.log(user);
+
+                // Send a welcome email
+                try {
+                    const { data, error } = await resend.emails.send({
+                        from: 'Acme <onboarding@resend.dev>',
+                        to: "sanjaisam333@gmail.com",
+                        subject: 'Welcome to Our Community',
+                        react: WelcomeTemplate({ firstName: first_name || 'User' }),
+                    });
+
+                    if (error) {
+                        console.error('Error sending email:', error);
+                    } else {
+                        console.log('Welcome email sent:', data);
+                    }
+                } catch (emailError) {
+                    console.error('Failed to send email:', emailError);
+                }
+
                 break;
             }
             case 'user.deleted': {

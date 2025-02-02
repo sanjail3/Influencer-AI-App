@@ -37,7 +37,7 @@ const ProgressIndicator = ({ remaining, max, collapsed }: ProgressIndicatorProps
       <div className="space-y-2">
         {!collapsed && (
           <div className="flex justify-between items-center">
-            <span className="text-base font-semibold text-white">Credits Remaining</span>
+            <span className="text-base font-semibold bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">Credits Remaining</span>
             <span className="text-base font-bold text-white">
               {remaining}/{max}
             </span>
@@ -76,7 +76,7 @@ const ProgressIndicator = ({ remaining, max, collapsed }: ProgressIndicatorProps
               <div className="w-full h-1" />
             </TooltipTrigger>
             <TooltipContent side="right" className="flex flex-col gap-1">
-              <p className="text-xl text-pink font-bold">Credits Remaining</p>
+              <p className="text-base font-semibold bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">Credits Remaining</p>
               <p className="text-xl text-pink font-bold">{remaining}/{max} Credits</p>
             </TooltipContent>
           </Tooltip>
@@ -164,8 +164,8 @@ export function Sidebar() {
                   collapsed ? "justify-center" : "text-base font-semibold"
                 )}
               >
-                <item.icon className="h-6 w-6" />
-                {!collapsed && <span className="text-base font-semibold tracking-wide">{item.title}</span>}
+                <item.icon className="h-6 w-6  " />
+                {!collapsed && <span className="text-base font-semibold bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">{item.title}</span>}
                 {collapsed && (
                   <Tooltip>
                     <TooltipTrigger>

@@ -7,7 +7,7 @@ const HowItWorks = () => {
   const [activeCard, setActiveCard] = useState(0);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
-  const handleMouseMove = (e) => {
+  const handleMouseMove = (e:any) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = (e.clientX - rect.left) / rect.width;
     const y = (e.clientY - rect.top) / rect.height;
@@ -68,7 +68,7 @@ const HowItWorks = () => {
     }
   ];
 
-  const Card = ({ step, index }) => {
+  const Card = ({ step, index }: { step: any, index: number }) => {
     const [isHovered, setIsHovered] = useState(false);
     const rotateX = isHovered ? (mousePosition.y - 0.5) * 20 : 0;
     const rotateY = isHovered ? (mousePosition.x - 0.5) * 20 : 0;
@@ -167,7 +167,7 @@ const HowItWorks = () => {
         </p>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {steps.map((step, index) => (
+          {steps.map((step, index: number) => (
             <Card key={index} step={step} index={index} />
           ))}
         </div>

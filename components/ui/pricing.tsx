@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useRef } from "react";
 import { buttonVariants } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -5,47 +7,39 @@ import { Switch } from "@/components/ui/switch";
 import useMediaQuery from "@/hooks/use-media-query";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
-import { Check, Star, Sparkles, Zap, Lock } from "lucide-react";
-import Link from "next/link";
+import { Check, Sparkles } from "lucide-react";
 import confetti from "canvas-confetti";
 import NumberFlow from "@number-flow/react";
 import { formatPrice } from "@/lib/lemon-squeezy/utils";
 import { CheckoutButton } from "../lemon-squeezy/CheckoutButton";
 
-// Component interface definitions remain the same...
-interface PricingPlan {
+interface Plan {
+  id: string;
   name: string;
-  price: string;
-  yearlyPrice: string;
-  period: string;
+  price: number;
+  interval: string;
   features: string[];
   description: string;
   buttonText: string;
-  href: string;
-  isPopular: boolean;
-  variantId: number;
-  id: string;
-  isUsageBased: boolean;
-  createdAt: Date;
-  updatedAt: Date;
+  isPopular?: boolean;
 }
+
 export function Pricing({
   plans,
   title = "✨ Choose Your Perfect Plan ✨",
   description = "Unlock amazing features that help you grow! 🚀\nAll plans include our award-winning support and powerful tools.",
 }: {
-  plans: any;
+  plans: any[];
   title?: string;
   description?: string;
-  
 }) {
-  const [isMonthly, setIsMonthly] = useState(true);
+  const [isAnnual, setIsAnnual] = useState(false);
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
   const isDesktop = useMediaQuery("(min-width: 768px)");
-  const switchRef = useRef<HTMLButtonElement>(null);
+  const switchRef = useRef<HTMLButtonElement | null>(null);
 
-  const handleToggle = (checked: boolean) => {
-    setIsMonthly(!checked);
+  const handleToggle = (checked: any) => {
+    setIsAnnual(checked);
     if (checked && switchRef.current) {
       const rect = switchRef.current.getBoundingClientRect();
       confetti({
@@ -61,10 +55,51 @@ export function Pricing({
     }
   };
 
+  // Get corresponding annual plan for a monthly plan
+  const getAnnualPlan = (monthlyPlan: Plan) => {
+    return plans.find(p => 
+      p.interval === 'year' && 
+      p.name.toLowerCase() === monthlyPlan.name.toLowerCase()
+    );
+  };
+
+  // Calculate discounted annual price (per month)
+  const getDiscountedPrice = (monthlyPrice: number) => {
+    const annualDiscount = 0.20; // 20% discount
+    return monthlyPrice * (1 - annualDiscount);
+  };
+
+  // Filter plans to show monthly plans but with annual prices when toggled
+  const displayPlans = plans.filter(plan => plan.interval === 'month').map(plan => {
+    if (isAnnual) {
+      const annualPlan = getAnnualPlan(plan);
+      return {
+        ...plan,
+        displayPrice: getDiscountedPrice(Number(plan.price)).toString(),
+        checkoutPlan: annualPlan, // Use this for checkout
+        interval: 'year'
+      };
+    }
+    return {
+      ...plan,
+      displayPrice: plan.price,
+      checkoutPlan: plan,
+      interval: 'month'
+    };
+  });
+
+  const getPlanEmoji = (index: number) => {
+    switch (index) {
+      case 0: return "🌟";
+      case 1: return "⭐";
+      case 2: return "💎";
+      default: return "✨";
+    }
+  };
+
   return (
     <div className="container py-20 relative">
-      {/* Background gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-purple-900/20 to-transparent pointer-events-none" />
+      <div className="absolute inset-0" />
       
       <motion.div 
         className="text-center space-y-4 mb-12"
@@ -87,8 +122,8 @@ export function Pricing({
         >
           <Label>
             <Switch
-              ref={switchRef as any}
-              checked={!isMonthly}
+              ref={switchRef}
+              checked={isAnnual}
               onCheckedChange={handleToggle}
               className="relative"
             />
@@ -100,8 +135,7 @@ export function Pricing({
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
-        {plans.map((plan:any, index:any) => (
-          console.log(plan),
+        {displayPlans.map((plan, index) => (
           <motion.div
             key={index}
             initial={{ opacity: 0, y: 50 }}
@@ -119,7 +153,6 @@ export function Pricing({
               "bg-gradient-to-b from-gray-900/90 to-gray-950/90"
             )}
           >
-            {/* Animated background gradient */}
             <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10 opacity-50" />
             
             {plan.isPopular && (
@@ -136,7 +169,7 @@ export function Pricing({
 
             <div className="relative z-10">
               <p className="text-xl font-semibold text-gray-200 mb-2">
-                {plan.name} {index === 1 ? "⭐" : index === 2 ? "💎" : "🌟"}
+                {plan.name} {getPlanEmoji(index)}
               </p>
               
               <motion.div 
@@ -146,8 +179,7 @@ export function Pricing({
               >
                 <span className="text-5xl font-bold text-white">
                   <NumberFlow
-                    // value={isMonthly ? Number(plan.price) : Number(plan.yearlyPrice)}
-                    value={isMonthly ? Number(formatPrice(plan.price)) : Number(formatPrice(plan.yearlyPrice))}
+                    value={Number(formatPrice(plan.displayPrice))}
                     format={{
                       style: "currency",
                       currency: "USD",
@@ -158,12 +190,12 @@ export function Pricing({
                   />
                 </span>
                 <span className="text-gray-400 ml-2">
-                  /{plan.period}
+                  /{plan.interval}
                 </span>
               </motion.div>
 
               <ul className="mt-6 space-y-3">
-                {plan.features.map((feature:any, idx:any) => (
+                {plan.features.map((feature: string, idx: number) => (
                   <motion.li 
                     key={idx}
                     initial={{ opacity: 0, x: -20 }}
@@ -183,7 +215,7 @@ export function Pricing({
                 whileTap={{ scale: 0.95 }}
               >
                 <CheckoutButton
-                  plan={plan}
+                  plan={plan.checkoutPlan}
                   isChangingPlans={false}
                   embed={false}
                   buttonname={plan.buttonText}

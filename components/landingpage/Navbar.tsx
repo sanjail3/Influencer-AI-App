@@ -53,7 +53,7 @@ export function Navbar() {
                 </a>
                 <ThemeToggle />
                 <a
-                  href="#"
+                  href="/sign-up"
                   className="inline-flex items-center px-6 py-2.5 border border-transparent text-sm font-medium rounded-full text-white bg-landing_primary-600 hover:bg-landing_primary-700 transition-all duration-200 shadow-md hover:shadow-lg hover:scale-105"
                 >
                   Get Started

@@ -73,7 +73,7 @@ export function Hero() {
           >
             <div className="rounded-md shadow w-full sm:w-auto">
               <a
-                href="#"
+                href="/sign-up"
                 className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-full text-white bg-landing_primary-600 hover:bg-landing_primary-700 md:py-4 md:text-lg md:px-10 transition-all duration-200 hover:shadow-lg hover:scale-105"
               >
                 Get Started

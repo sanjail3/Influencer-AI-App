@@ -1,4 +1,4 @@
-import { ReactNode, forwardRef, useRef } from "react";
+import { ReactNode, forwardRef, useRef, Ref } from "react";
 import { HTMLMotionProps, motion, useSpring, useTransform } from "framer-motion";
 import Balancer from "react-wrap-balancer";
 
@@ -17,13 +17,18 @@ interface FeatureCardProps extends HTMLMotionProps<"div"> {
 const FeatureCard = forwardRef<HTMLDivElement, FeatureCardProps>(
   ({ feature, className, zIndexOffset = 0, ...props }, ref) => {
     const { title, category, videoUrl, posterUrl } = feature;
-    const springValue = useSpring(0, { bounce: 0 });
+    const springValue = useSpring(0, {
+      bounce: 0,
+    });
     const zIndex = useTransform(springValue, (value) => +Math.floor(value * 10) + 10 + zIndexOffset);
     const scale = useTransform(springValue, [0, 1], [1, 1.1]);
 
-    if(!ref){
-      return ;
-    }
+    const validProps = Object.entries(props).reduce((acc: { [key: string]: any }, [key, value]) => {
+      if (key !== 'ref' && typeof value !== 'string') {
+        acc[key] = value;
+      }
+      return acc;
+    }, {});
 
     const content = (
       <>
@@ -53,20 +58,27 @@ const FeatureCard = forwardRef<HTMLDivElement, FeatureCardProps>(
       "relative flex h-[30rem] w-80 flex-col overflow-hidden rounded-2xl shadow-lg transition-shadow duration-300 ease-in-out hover:shadow-2xl",
       className
     );
-    
 
     return (
       <>
-       <div>
-       {content}
-       </div>
-         
-          
+        <motion.div
+          ref={ref}
+          {...validProps}
+          onMouseEnter={() => springValue.set(1)}
+          onMouseLeave={() => springValue.set(0)}
+          style={{
+            zIndex,
+            scale,
+          }}
+          className={cn(containerClassName, "hidden sm:flex ")}
         
+        >
+          {content}
+        </motion.div>
         <motion.div
           initial={{ y: 100 }}
           whileInView={{ y: 0, transition: { duration: 0.5 } }}
-          className={cn(containerClassName, "flex sm:hidden")}
+          className={cn(containerClassName, "flex sm:hidden cursor-pointer")}
         >
           {content}
         </motion.div>
@@ -83,9 +95,9 @@ export default function ProductFeatures() {
 
   return (
     <section className="storybook-fix flex w-full flex-col items-center gap-8 py-16">
-      <h2 className="text-4xl font-bold text-gray-800 text-center">Explore Our Products</h2>
+      <h2 className="text-4xl font-bold text-gray-800 text-center">AI-Generated UGC Ads That Look 100% Real!</h2>
       <p className="text-gray-600 max-w-3xl text-center text-lg">
-        Discover our curated selection of artisanal and elegant items. Perfectly crafted to enhance your space and lifestyle.
+      AI-generated influencers that look, sound, and sell like real people!
       </p>
 
       <div className="relative flex w-full flex-wrap justify-center gap-16 px-6 py-16 sm:flex-row sm:gap-8 lg:max-w-screen-xl">

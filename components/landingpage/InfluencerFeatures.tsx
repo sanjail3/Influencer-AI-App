@@ -10,41 +10,43 @@ import Link from "next/link";
 export function InfluencerFeatures() {
   const features = [
     {
-      title: "Track issues effectively",
+      title: "✅ Instant AI Avatars",
       description:
-        "Track and manage your project issues with ease using our intuitive interface.",
+        "No need for expensive influencers. Our AI generates <span class='text-teal-500 dark:text-teal-300'>human-like creators</span> tailored to your brand.",
       skeleton: <SkeletonOne />,
       className:
-        "col-span-1 md:col-span-4 lg:col-span-4 border-b md:border-r dark:border-neutral-800",
+        "col-span-1 md:col-span-3 lg:col-span-3 border-b md:border-r dark:border-neutral-800",
     },
     {
-      title: "Capture pictures with AI",
+      title: "✅ One-Click Ad Creation",
       description:
-        "Capture stunning photos effortlessly using our advanced AI technology.",
+        "Just paste your website link, and our AI <span class='text-teal-500 dark:text-teal-300'>writes the script</span>, generates the video, and delivers ad-ready content.",
       skeleton: <SkeletonTwo />,
-      className: "col-span-1 md:col-span-2 lg:col-span-2 border-b dark:border-neutral-800",
+      className:
+        "col-span-1 md:col-span-3 lg:col-span-3 border-b md:border-r dark:border-neutral-800",
     },
     {
-      title: "Watch our AI on YouTube",
+      title: "✅ 10x Faster Than Traditional UGC",
       description:
-        "Whether its you or Tyler Durden, you can get to know about our product on YouTube",
+        "Skip the weeks of <span class='text-teal-500 dark:text-teal-300'>back-and-forth</span> with creators.",
       skeleton: <SkeletonThree />,
       className:
         "col-span-1 md:col-span-3 lg:col-span-3 border-b md:border-r dark:border-neutral-800",
     },
     {
-      title: "Deploy in seconds",
+      title: "✅ Affordable & Scalable",
       description:
-        "With our blazing fast, state of the art, cutting edge, we are so back cloud servies (read AWS) - you can deploy your model in seconds.",
+        "Reduce ad costs by <span class='text-teal-500 dark:text-teal-300'>70%</span> while scaling your campaigns effortlessly.",
       skeleton: <SkeletonFour />,
       className: "col-span-1 md:col-span-3 lg:col-span-3 border-b md:border-none",
     },
   ];
+
   return (
     <div className="relative z-20 py-10 lg:py-40 max-w-7xl mx-auto">
       <div className="px-8">
         <h4 className="text-3xl lg:text-5xl lg:leading-tight max-w-5xl mx-auto text-center tracking-tight font-medium text-black dark:text-white">
-          Packed with thousands of features
+          Why Spend Weeks on UGC When AI Can Do It in Minutes?
         </h4>
 
         <p className="text-sm lg:text-base max-w-2xl my-4 mx-auto text-neutral-500 text-center font-normal dark:text-neutral-300">
@@ -58,7 +60,9 @@ export function InfluencerFeatures() {
           {features.map((feature) => (
             <FeatureCard key={feature.title} className={feature.className}>
               <FeatureTitle>{feature.title}</FeatureTitle>
-              <FeatureDescription>{feature.description}</FeatureDescription>
+              <FeatureDescription>
+                <span dangerouslySetInnerHTML={{ __html: feature.description }} />
+              </FeatureDescription>
               <div className="h-full w-full">{feature.skeleton}</div>
             </FeatureCard>
           ))}

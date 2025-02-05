@@ -1,5 +1,5 @@
 'use client';
-import React, { useRef } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { AnimatedBeam, Circle } from '@/components/ui/beam';
 import { Card } from '@/components/ui/card';
 import { Play, Video, Volume2 } from 'lucide-react';
@@ -24,8 +24,27 @@ And third with a 1 3L dustbin
 and LED touchscreen it's
 designed for your convenience.`;
 
+  const [typedScript, setTypedScript] = useState('');
+  const [isTypingComplete, setIsTypingComplete] = useState(false);
+
+  // Typing animation for script
+  useEffect(() => {
+    let currentIndex = 0;
+    const typingInterval = setInterval(() => {
+      if (currentIndex < scriptContent.length) {
+        setTypedScript((prev) => prev + scriptContent[currentIndex]);
+        currentIndex++;
+      } else {
+        clearInterval(typingInterval);
+        setIsTypingComplete(true);
+      }
+    }, 30); // Adjust typing speed here
+
+    return () => clearInterval(typingInterval);
+  }, [scriptContent]);
+
   return (
-    <div className="hidden md:block transition-colors duration-200"> 
+    <div className="hidden md:block transition-colors duration-200">
       <div
         className="relative w-full max-w-7xl mx-auto p-4 md:p-8 lg:p-12"
         ref={containerRef}
@@ -42,20 +61,32 @@ designed for your convenience.`;
                   </svg>
                   <span className="font-medium text-sm md:text-base text-gray-900 dark:text-gray-100">Script</span>
                 </div>
-                <div className="h-36 md:h-48 p-3 md:p-4 font-mono text-xs md:text-sm space-y-1 md:space-y-2 overflow-auto text-gray-800 dark:text-gray-200">
-                  {scriptContent.split('\n').map((line, lineIndex) => (
-                    <div key={lineIndex} className="overflow-hidden">
-                      {line.split('').map((char, charIndex) => (
-                        <span
-                          key={`${lineIndex}-${charIndex}`}
-                          className="opacity-0 animate-fade-in inline-block"
-                          style={{ animationDelay: `${(lineIndex * 20 + charIndex) * 30}ms` }}
-                        >
-                          {char}
-                        </span>
-                      ))}
-                    </div>
-                  ))}
+                <div className="h-36 md:h-48 p-3 md:p-4 font-mono text-xs md:text-sm space-y-1 md:space-y-2 overflow-auto h-36 md:h-48 p-3 md:p-4 font-mono text-xs md:text-sm space-y-1 md:space-y-2 overflow-auto bg-gray-50 dark:bg-gray-900/30 text-gray-800 dark:text-gray-200">
+                <div className="whitespace-pre-wrap break-words">
+                    {typedScript.split('\n').map((line, lineIndex) => (
+                      <div 
+                        key={lineIndex} 
+                        className="opacity-0 animate-fade-in"
+                        style={{ 
+                          animationDelay: `${(lineIndex * 20) * 30}ms`,
+                          color: 'inherit'
+                        }}
+                      >
+                        {line.split('').map((char, charIndex) => (
+                          <span
+                            key={`${lineIndex}-${charIndex}`}
+                            className="opacity-0 animate-fade-in inline-block"
+                            style={{ 
+                              animationDelay: `${(lineIndex * 20 + charIndex) * 30}ms`,
+                              color: 'inherit'
+                            }}
+                          >
+                            {char}
+                          </span>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
                 </div>
                 <div className="p-3 md:p-4 border-t border-gray-200 dark:border-gray-700 flex items-center gap-2 text-landing_primary-500 dark:text-landing_primary-400">
                   <div className="w-2 h-2 rounded-full animate-pulse bg-landing_primary-500 dark:bg-landing_primary-400" />
@@ -162,9 +193,10 @@ designed for your convenience.`;
           toRef={processingRef}
           dotted={false}
           dotSpacing={8}
-          pathWidth={1.5}
+          pathWidth={2}
           gradientStartColor="var(--landing-primary-500)"
           gradientStopColor="var(--landing-primary-600)"
+          delay={isTypingComplete ? 0.5 : 0} // Start after typing completes
         />
         <AnimatedBeam
           containerRef={containerRef}
@@ -172,9 +204,10 @@ designed for your convenience.`;
           toRef={processingRef}
           dotted={false}
           dotSpacing={4}
-          pathWidth={1.5}
+          pathWidth={2}
           gradientStartColor="var(--landing-primary-500)"
           gradientStopColor="var(--landing-primary-600)"
+          delay={isTypingComplete ? 1 : 0} // Start after typing completes
         />
         <AnimatedBeam
           containerRef={containerRef}
@@ -182,9 +215,10 @@ designed for your convenience.`;
           toRef={processingRef}
           dotted={false}
           dotSpacing={8}
-          pathWidth={1.5}
+          pathWidth={2}
           gradientStartColor="var(--landing-primary-500)"
           gradientStopColor="var(--landing-primary-600)"
+          delay={isTypingComplete ? 1.5 : 0} // Start after typing completes
         />
         <AnimatedBeam
           containerRef={containerRef}
@@ -192,9 +226,10 @@ designed for your convenience.`;
           toRef={outputRef}
           dotted={false}
           dotSpacing={8}
-          pathWidth={1.5}
+          pathWidth={2}
           gradientStartColor="var(--landing-primary-500)"
           gradientStopColor="var(--landing-primary-600)"
+          delay={isTypingComplete ? 2 : 0} // Start after typing completes
         />
       </div>
     </div>

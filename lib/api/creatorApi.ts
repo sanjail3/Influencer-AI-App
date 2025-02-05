@@ -1,7 +1,7 @@
 import { CreatorResponse } from '../types/creator';
 import { dummyCreatorData } from '../data/dummyCreators';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
 
 export async function fetchCreatorsAndVoices(): Promise<CreatorResponse> {
   try {

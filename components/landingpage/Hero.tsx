@@ -47,9 +47,10 @@ export function Hero() {
             transition={{ duration: 0.5 }}
             className="text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white sm:text-5xl md:text-6xl px-4"
           >
-            <span className="block mb-2">Create Engaging</span>
+            <span className="block mb-2">          {/* Animated Heading */}Launch UGC Ads 10x Faster
+            </span>
             <span className="block text-landing_primary-600 dark:text-landing_primary-400">
-              UGC Ads for SaaS
+            AI Creates, You Scale!
             </span>
           </motion.h1>
 
@@ -60,8 +61,7 @@ export function Hero() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="mt-3 max-w-md mx-auto text-base text-gray-600 dark:text-gray-300 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl px-4"
           >
-            Transform your SaaS marketing with AI-powered UGC content creation.
-            Generate authentic, engaging ads that convert.
+            Create high-converting UGC ads in minutes with AI Avatars. No shoots, no contracts – just instant, engaging content that drives sales.
           </motion.p>
 
           {/* Buttons */}

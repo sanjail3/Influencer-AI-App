@@ -440,7 +440,7 @@ interface TaskProgress {
   };
 }
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
 
 
 async function generateVideo(videoData: VideoData, projectId: string, userId: string) {
@@ -535,7 +535,9 @@ export function CreatorSelector({ creators, voices, onBack, onNext, screenshot_d
   });
   const[videoId, setVideoId] = useState<string | null>(null);
 
-  const resend = new Resend(process.env.RESEND_API_KEY);
+  // console.log(process.env.RESEND_API_KEY);
+
+  const resend = new Resend("re_3vrg7Q79_53HBwmH1DsTj1GeY8qhEyLaL");
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -748,21 +750,21 @@ export function CreatorSelector({ creators, voices, onBack, onNext, screenshot_d
           return;
         }
 
-        const checkResponse = await fetch('/api/user/check-subscription');
-        if (!checkResponse.ok) {
-          const errorData = await checkResponse.json();
-          if (checkResponse.status === 401) {
-            toast.error('Please login to generate videos');
-          } else if (errorData.errorType === 'INSUFFICIENT_CREDITS') {
-            toast.error('You need more credits. Upgrade your plan or purchase more credits.');
-          } else if (errorData.errorType === 'NO_SUBSCRIPTION') {
-            toast.error('Premium subscription required for video generation');
-          } else {
-            toast.error('Failed to verify subscription status');
-          }
-          setIsLoading(false);
-          return;
-        }
+        // const checkResponse = await fetch('/api/user/check-subscription');
+        // if (!checkResponse.ok) {
+        //   const errorData = await checkResponse.json();
+        //   if (checkResponse.status === 401) {
+        //     toast.error('Please login to generate videos');
+        //   } else if (errorData.errorType === 'INSUFFICIENT_CREDITS') {
+        //     toast.error('You need more credits. Upgrade your plan or purchase more credits.');
+        //   } else if (errorData.errorType === 'NO_SUBSCRIPTION') {
+        //     toast.error('Premium subscription required for video generation');
+        //   } else {
+        //     toast.error('Failed to verify subscription status');
+        //   }
+        //   setIsLoading(false);
+        //   return;
+        // }
 
         if (!projectId) {
           toast.error('Please create a project');

@@ -49,7 +49,7 @@ export function Benefits() {
     }
   ];
 
-  const highlightWord = (text, highlightWords) => {
+  const highlightWord = (text: string, highlightWords: string[]) => {
     const regex = new RegExp(`(${highlightWords.join('|')})`, 'gi');
     return text.split(regex).map((part, index) => 
       highlightWords.some(word => word.toLowerCase() === part.toLowerCase()) 

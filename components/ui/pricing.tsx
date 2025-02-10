@@ -13,6 +13,8 @@ import NumberFlow from "@number-flow/react";
 import { formatPrice } from "@/lib/lemon-squeezy/utils";
 import { CheckoutButton } from "../lemon-squeezy/CheckoutButton";
 
+type PlanName = 'starter' | 'professional' | 'enterprise';
+
 interface Plan {
   id: string;
   name: string;
@@ -38,7 +40,7 @@ export function Pricing({
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const switchRef = useRef<HTMLButtonElement | null>(null);
 
-  const handleToggle = (checked: any) => {
+  const handleToggle = (checked: boolean) => {
     setIsAnnual(checked);
     if (checked && switchRef.current) {
       const rect = switchRef.current.getBoundingClientRect();
@@ -55,37 +57,22 @@ export function Pricing({
     }
   };
 
-  // Get corresponding annual plan for a monthly plan
-  const getAnnualPlan = (monthlyPlan: Plan) => {
-    return plans.find(p => 
-      p.interval === 'year' && 
-      p.name.toLowerCase() === monthlyPlan.name.toLowerCase()
-    );
-  };
-
-  // Calculate discounted annual price (per month)
-  const getDiscountedPrice = (monthlyPrice: number) => {
-    const annualDiscount = 0.20; // 20% discount
-    return monthlyPrice * (1 - annualDiscount);
-  };
-
-  // Filter plans to show monthly plans but with annual prices when toggled
-  const displayPlans = plans.filter(plan => plan.interval === 'month').map(plan => {
+  // Calculate the display price for annual plans
+  const getDisplayPrice = (plan: any) => {
     if (isAnnual) {
-      const annualPlan = getAnnualPlan(plan);
-      return {
-        ...plan,
-        displayPrice: getDiscountedPrice(Number(plan.price)).toString(),
-        checkoutPlan: annualPlan, // Use this for checkout
-        interval: 'year'
-      };
+      const monthlyPrice = plan.price / 12; 
+      return monthlyPrice;
     }
-    return {
-      ...plan,
-      displayPrice: plan.price,
-      checkoutPlan: plan,
-      interval: 'month'
-    };
+    return plan.price;
+  };
+
+  // Filter plans based on the selected billing interval
+  const order: Record<PlanName, number> = { starter: 1, professional: 2, enterprise: 3 };
+  const displayPlans = plans.filter(plan => 
+    isAnnual ? plan.interval === 'year' : plan.interval === 'month'
+  ).sort((a, b) => {
+    // Sort plans to maintain consistent order: starter, professional, enterprise
+    return order[a.name.toLowerCase() as PlanName] - order[b.name.toLowerCase() as PlanName];
   });
 
   const getPlanEmoji = (index: number) => {
@@ -137,7 +124,7 @@ export function Pricing({
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
         {displayPlans.map((plan, index) => (
           <motion.div
-            key={index}
+            key={plan.id || index}
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.2 }}
@@ -179,7 +166,7 @@ export function Pricing({
               >
                 <span className="text-5xl font-bold text-white">
                   <NumberFlow
-                    value={Number(formatPrice(plan.displayPrice))}
+                    value={Number(formatPrice(getDisplayPrice(plan)))}
                     format={{
                       style: "currency",
                       currency: "USD",
@@ -190,8 +177,13 @@ export function Pricing({
                   />
                 </span>
                 <span className="text-gray-400 ml-2">
-                  /{plan.interval}
+                  /month
                 </span>
+                {isAnnual && (
+                  <div className="text-sm text-gray-400 mt-1">
+                    billed annually
+                  </div>
+                )}
               </motion.div>
 
               <ul className="mt-6 space-y-3">
@@ -215,7 +207,7 @@ export function Pricing({
                 whileTap={{ scale: 0.95 }}
               >
                 <CheckoutButton
-                  plan={plan.checkoutPlan}
+                  plan={plan}
                   isChangingPlans={false}
                   embed={false}
                   buttonname={plan.buttonText}

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Pricing } from "@/components/landingpage/Pricing";
 import { SubscriptionPlan } from "@prisma/client";
+import { get_subscription_plans } from "@/lib/api/subscriptionPlan";
 
 
 interface PricingPlan {
@@ -22,13 +23,15 @@ interface PricingPlan {
 // Fetch subscription plans from the API
 async function fetchSubscriptionPlans() {
   try {
+    console.log("Fetching subscription plans...");
+    
     const response = await fetch('/api/subscription-plans'); // Fetch plans from the API
-    const plans = await response.json();
+    const allPlans = await response.json();
 
-    console.log(plans);
+    console.log(allPlans);
 
     // Group plans by interval
-    const groupedPlans = plans.reduce((acc: Record<string, SubscriptionPlan[]>, plan: SubscriptionPlan) => {
+    const groupedPlans = allPlans.reduce((acc: Record<string, SubscriptionPlan[]>, plan: SubscriptionPlan) => {
       const interval = plan.interval;
       if (interval == null) return acc; // Skip if interval is null or undefined
       if (!acc[interval]) {
@@ -142,6 +145,8 @@ function PricingPage() {
     async function loadPlans() {
       try {
         const groupedPlans = await fetchSubscriptionPlans();
+        console.log(groupedPlans);
+        if (!groupedPlans) return;
         const transformedPlans = transformPlansToUIFormat(groupedPlans);
         console.log(transformedPlans);
         setPlans(transformedPlans);

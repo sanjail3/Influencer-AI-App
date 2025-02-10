@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import { Pricing } from "@/components/ui/pricing";
 import { SubscriptionPlan } from "@prisma/client";
+import { motion } from "framer-motion";
+import { ArrowDown, Zap, Shield, Clock } from "lucide-react";
 import "./globals.css";
 
 interface PricingPlan {
@@ -19,18 +21,93 @@ interface PricingPlan {
   yearlyVariantId: number;
 }
 
+interface Feature {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+}
+
+const IntroSection = () => {
+  const features: Feature[] = [
+    {
+      icon: <Zap className="w-6 h-6 text-purple-400" />,
+      title: "Lightning Fast",
+      description: "Experience blazing fast performance with our optimized platform"
+    },
+    {
+      icon: <Shield className="w-6 h-6 text-purple-400" />,
+      title: "Enterprise Security",
+      description: "Bank-grade security to keep your data safe and protected"
+    },
+    {
+      icon: <Clock className="w-6 h-6 text-purple-400" />,
+      title: "24/7 Support",
+      description: "Round-the-clock support to help you succeed"
+    }
+  ];
+
+  return (
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="max-w-4xl mx-auto text-center mb-20 px-4"
+    >
+      <motion.h1 
+        className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-purple-400 via-pink-500 to-purple-400 text-transparent bg-clip-text"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.2 }}
+      >
+        Supercharge Your Business
+      </motion.h1>
+      
+      <motion.p 
+        className="text-xl text-gray-300 mb-12"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.4 }}
+      >
+        Choose the perfect plan that scales with your needs. No hidden fees, just pure value.
+      </motion.p>
+
+      <div className="grid md:grid-cols-3 gap-8 mb-12">
+        {features.map((feature, index) => (
+          <motion.div
+            key={index}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 * (index + 1) }}
+            className="p-6 rounded-xl bg-gray-900/50 backdrop-blur-sm border border-gray-800"
+          >
+            <div className="mb-4">{feature.icon}</div>
+            <h3 className="text-xl font-semibold mb-2 text-gray-100">{feature.title}</h3>
+            <p className="text-gray-400">{feature.description}</p>
+          </motion.div>
+        ))}
+      </div>
+
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1 }}
+        className="flex justify-center"
+      >
+        <ArrowDown className="w-8 h-8 text-purple-400 animate-bounce" />
+      </motion.div>
+    </motion.div>
+  );
+};
+
 // Fetch subscription plans from the API
 async function fetchSubscriptionPlans() {
   try {
-    const response = await fetch('/api/subscription-plans'); // Fetch plans from the API
+    const response = await fetch('/api/subscription-plans');
     const plans = await response.json();
-
-    console.log(plans);
 
     // Group plans by interval
     const groupedPlans = plans.reduce((acc: Record<string, SubscriptionPlan[]>, plan: SubscriptionPlan) => {
       const interval = plan.interval;
-      if (interval == null) return acc; // Skip if interval is null or undefined
+      if (interval == null) return acc;
       if (!acc[interval]) {
         acc[interval] = [];
       }
@@ -38,17 +115,14 @@ async function fetchSubscriptionPlans() {
       return acc;
     }, {});
 
-    console.log(groupedPlans);
-
     return groupedPlans;
   } catch (error) {
     console.error('Error fetching subscription plans:', error);
-    return { month: [], year: [] }; // Return empty groups if there's an error
+    return { month: [], year: [] };
   }
 }
 
-// Helper function to transform database plans to UI format
-function transformPlansToUIFormat(groupedPlans: { month: SubscriptionPlan[], year: SubscriptionPlan[] }): PricingPlan[] {
+function transformPlansToUIFormat(groupedPlans: { month: SubscriptionPlan[], year: SubscriptionPlan[] }): any[] {
   const planFeatureMap = {
     starter: [
       "Up to 10 projects",
@@ -78,15 +152,14 @@ function transformPlansToUIFormat(groupedPlans: { month: SubscriptionPlan[], yea
     ],
   };
 
-  // Transform monthly plans
-  const monthlyPlans = groupedPlans.month.map((plan): any => {
+  const transformPlan = (plan: SubscriptionPlan, interval: 'month' | 'year') => {
     const planKey = plan.name.toLowerCase() as keyof typeof planFeatureMap;
     const basePrice = parseFloat(plan.price);
 
     return {
       name: plan.productName.toUpperCase(),
       price: basePrice.toString(),
-      period: "per month",
+      period: `per ${interval}`,
       features: planFeatureMap[planKey] || [],
       description: plan.name === "professional" 
         ? "Ideal for growing teams and businesses"
@@ -99,36 +172,13 @@ function transformPlansToUIFormat(groupedPlans: { month: SubscriptionPlan[], yea
       href: plan.name === "Enterprise" ? "/contact" : "/sign-up",
       isPopular: plan.name === "professional",
       variantId: plan.variantId,
-      interval: plan.interval,
+      interval: interval,
+      originalPlan: plan, // Keep reference to original plan for checkout
     };
-  });
+  };
 
-  // Transform yearly plans
-  const yearlyPlans = groupedPlans.year.map((plan) => {
-    const planKey = plan.name.toLowerCase() as keyof typeof planFeatureMap;
-    const basePrice = parseFloat(plan.price);
-
-    return {
-      name: plan.productName.toUpperCase(),
-      price: basePrice.toString(),
-      period: "per year",
-      features: planFeatureMap[planKey] || [],
-      description: plan.name === "professional" 
-        ? "Ideal for growing teams and businesses"
-        : plan.name === "enterprise"
-          ? "For large organizations with specific needs"
-          : "Perfect for individuals and small projects",
-      buttonText: plan.name === "enterprise" 
-        ? "Contact Sales" 
-        : "Get Started",
-      href: plan.name === "Enterprise" ? "/contact" : "/sign-up",
-      isPopular: plan.name === "professional",
-      variantId: plan.variantId,
-      interval: plan.interval,
-    };
-  });
-
-  console.log(monthlyPlans, yearlyPlans);
+  const monthlyPlans = groupedPlans.month.map(plan => transformPlan(plan, 'month'));
+  const yearlyPlans = groupedPlans.year.map(plan => transformPlan(plan, 'year'));
 
   return [...monthlyPlans, ...yearlyPlans];
 }
@@ -143,7 +193,6 @@ function PricingPage() {
       try {
         const groupedPlans = await fetchSubscriptionPlans();
         const transformedPlans = transformPlansToUIFormat(groupedPlans);
-        console.log(transformedPlans);
         setPlans(transformedPlans);
       } catch (err) {
         setError("Failed to load subscription plans");
@@ -156,20 +205,29 @@ function PricingPage() {
   }, []);
 
   if (loading) {
-    return <div className="h-[800px] flex items-center justify-center">Loading...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="h-[800px] flex items-center justify-center text-red-500">{error}</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-red-500 text-xl">{error}</div>
+      </div>
+    );
   }
 
   return (
     <div 
-      className="h-[800px] overflow-y-auto"
+      className="min-h-screen overflow-y-auto"
       style={{
         background: `radial-gradient(ellipse at top, rgba(129, 8, 172, 0.4), black)`,
       }}
     >
+      <IntroSection />
       <Pricing
         plans={plans}
         title="Simple, Transparent Pricing"

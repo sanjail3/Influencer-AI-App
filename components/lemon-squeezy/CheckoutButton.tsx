@@ -69,11 +69,11 @@ export const CheckoutButton = forwardRef<ButtonElement, ButtonProps>(
                 <SignInButton>
                     <Button
                         ref={ref}
-                        disabled={loading || isCurrent || props.disabled}
+                        
                         className={buttonClasses}
                         {...otherProps}
                     >
-                        Sign up {isPopular ? "⚡" : "→"}
+                        Get Started {isPopular ? "⚡" : "→"}
                     </Button>
                 </SignInButton>
             );

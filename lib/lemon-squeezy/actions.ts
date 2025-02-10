@@ -214,13 +214,23 @@ export async function processWebhookEvent(webhookEvent: LsWebhookEvent) {
         processingError = "Event body is missing the 'meta' property.";
     } else if (webhookHasData(eventBody)) {
         if (webhookEvent.eventName.startsWith('subscription_payment_')) {
-            // Save subscription invoices; eventBody is a SubscriptionInvoice
-            // Not implemented.
+            
         } else if (webhookEvent.eventName.startsWith('subscription_')) {
             // Save subscription events; obj is a Subscription
             const attributes = eventBody.data.attributes;
             const variantId = `${attributes.variant_id}`;
 
+            console.log(variantId);
+
+            console.log("inside subscription event...");
+
+
+            // Mapping of variant IDs to credits
+          
+            
+
+            // We assume that the Plan table is up to date.
+         
             // We assume that the Plan table is up to date.
             const plan = await prisma.subscriptionPlan.findMany({
                 where: {
@@ -268,8 +278,13 @@ export async function processWebhookEvent(webhookEvent: LsWebhookEvent) {
 
                 console.log(updateData);
 
+                
+
                 // Create/update subscription in the database.
                 try {
+                    
+                    
+                    
                     await prisma.userSubscription.upsert({
                         where: {
                             userId: updateData.userId,
@@ -282,6 +297,37 @@ export async function processWebhookEvent(webhookEvent: LsWebhookEvent) {
                     console.error(error);
                 }
                 if (webhookEvent.eventName === 'subscription_created') {
+                    
+                    const attributes = eventBody.data.attributes;
+                    const variantId = `${attributes.variant_id}`;
+
+                    console.log(variantId);
+
+                    console.log("inside subscription event...");
+
+
+                    // Mapping of variant IDs to credits
+                    const creditMapping: {[key: string]: number} = {
+                        '679422': 50,
+                        '679423': 125,
+                        '679424': 250,
+                        '679425': 600,
+                        '679426': 1500,
+                        '679427': 3000
+                    };
+
+                    // Check if the variant ID exists in the mapping
+                    const creditsToAdd = creditMapping[variantId];
+
+                    if (creditsToAdd) {
+                      
+                        await prisma.user.update({
+                            where: { id: updateData.userId }, // Assuming userId is available
+                            data: { credits: { increment: creditsToAdd } ,maxCredits: { increment: creditsToAdd }}
+                        });
+                    }
+                    
+                    
                     try {
                         const { data, error } = await resend.emails.send({
                             from: 'Acme <onboarding@resend.dev>', // Replace with your email
@@ -353,6 +399,10 @@ export async function getUserSubscriptions() {
 export async function cancelSub(id: string) {
     configureLemonSqueezy();
 
+    console.log(id);
+
+    console.log("inside cancelSub");
+
     // Get user subscriptions
     const userSubscriptions = await getUserSubscriptions();
 
@@ -360,6 +410,41 @@ export async function cancelSub(id: string) {
     const subscription = userSubscriptions.find(
         (sub) => sub.lemonSqueezyId === id,
     );
+
+    if (!subscription) {
+        throw new Error(`Subscription #${id} not found.`);
+    }
+
+    const subscriptionPlan = await prisma.subscriptionPlan.findUnique({
+        where: { id: subscription.planId }, // Assuming planId is part of the subscription object
+    });
+
+    const variantId = subscriptionPlan?.variantId; 
+
+    if (!variantId) {
+        throw new Error(`Subscription #${id} has no variant ID.`);
+    }
+
+
+// Mapping of variant IDs to credits
+    const creditMapping: {[key: string]: number} = {
+        '679422': 50,
+        '679423': 125,
+        '679424': 250,
+        '679425': 600,
+        '679426': 1500,
+        '679427': 3000
+    };
+
+
+    const creditsToReduce = creditMapping[variantId];
+    if (creditsToReduce) {
+        // Reduce user's credits in the database
+        await prisma.user.update({
+            where: { id: subscription.userId }, // Assuming userId is part of the subscription object
+            data: { credits: { decrement: creditsToReduce }, maxCredits: { decrement: creditsToReduce } }
+        });
+    }
 
     if (!subscription) {
         throw new Error(`Subscription #${id} not found.`);

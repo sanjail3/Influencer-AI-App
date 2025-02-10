@@ -11,7 +11,8 @@ import {
   HelpCircle,
   Settings,
   Crown,
-  Zap
+  Zap,
+  Sparkles
 } from "lucide-react";
 import {
   TooltipProvider,
@@ -96,6 +97,7 @@ const sidebarItems = [
     title: "Social Schedule",
     icon: Calendar,
     href: "/schedule",
+    comingSoon: true,
   },
   {
     title: "Help",
@@ -156,21 +158,47 @@ export function Sidebar() {
       >
         <div className="flex-1 py-8">
           {sidebarItems.map((item) => (
-            <Link key={item.title} href={item.href} passHref>
+            <Link key={item.title} href={item.comingSoon ? '#' : item.href} passHref>
               <Button
                 variant="ghost"
                 className={cn(
                   "w-full justify-start gap-4 p-4 mb-3 text-white hover:text-white hover:bg-purple-900/50 relative group",
                   collapsed ? "justify-center" : "text-base font-semibold"
                 )}
+                onClick={item.comingSoon ? (e) => e.preventDefault() : undefined}
               >
-                <item.icon className="h-6 w-6  " />
-                {!collapsed && <span className="text-base font-semibold bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">{item.title}</span>}
-                {collapsed && (
+                <item.icon className="h-6 w-6" />
+                {!collapsed && (
+                  <>
+                    <span className="text-base font-semibold bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">
+                      {item.title}
+                    </span>
+                    {item.comingSoon && (
+                      <div className="absolute right-2 flex items-center">
+                        <div className="relative flex items-center">
+                          <div className="px-2 py-0.5 rounded-full bg-gradient-to-r from-yellow-400/20 to-amber-500/20 border border-yellow-500/30 backdrop-blur-sm">
+                            <span className="text-xs font-bold bg-gradient-to-r from-yellow-400 to-amber-500 bg-clip-text text-transparent flex items-center gap-1">
+                              <Sparkles className="h-3 w-3 text-yellow-400" />
+                                 Soon
+                            </span>
+                          </div>
+                          <div className="absolute -inset-px rounded-full bg-gradient-to-r from-yellow-400/20 to-amber-500/20 animate-pulse" />
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
+                {collapsed && item.comingSoon && (
                   <Tooltip>
                     <TooltipTrigger>
-                      <div className="absolute left-full ml-2 px-3 py-2 bg-purple-900 rounded-md text-white text-base font-semibold opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50">
+                      <div className="absolute left-full ml-2 px-3 py-2 bg-purple-900 rounded-md text-white text-base font-semibold opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 flex items-center gap-2">
                         {item.title}
+                        <div className="px-2 py-0.5 rounded-full bg-gradient-to-r from-yellow-400/20 to-amber-500/20 border border-yellow-500/30">
+                          <span className="text-xs font-bold bg-gradient-to-r from-yellow-400 to-amber-500 bg-clip-text text-transparent flex items-center gap-1">
+                            <Sparkles className="h-3 w-3 text-yellow-400" />
+                            Soon
+                          </span>
+                        </div>
                       </div>
                     </TooltipTrigger>
                   </Tooltip>

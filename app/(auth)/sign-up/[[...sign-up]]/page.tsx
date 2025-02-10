@@ -46,9 +46,12 @@ export default function Page() {
                   formButtonPrimary:
                     "bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors",
                 },
+                
               }}
-              signInUrl="/sign-in"
-              forceRedirectUrl="/dashboard"
+           
+              forceRedirectUrl={"/dashboard"}
+             
+             
             />
 
             <p className="mt-8 text-center text-gray-300">

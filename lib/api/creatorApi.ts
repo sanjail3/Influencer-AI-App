@@ -1,23 +1,23 @@
 import { CreatorResponse } from '../types/creator';
-import { dummyCreatorData } from '../data/dummyCreators';
+// import { dummyCreatorData } from '../data/dummyCreators';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
 
 export async function fetchCreatorsAndVoices(): Promise<CreatorResponse> {
   try {
-    const voicesResponse = await fetch(`${API_URL}/get_voices`);
+    const backgroundMusicResponse = await fetch(`${API_URL}/get_background_music`);
     const creatorsResponse = await fetch(`${API_URL}/get_creators`);
 
-    if (!voicesResponse.ok || !creatorsResponse.ok) {
-      throw new Error('Failed to fetch voices or creators');
+    if (!backgroundMusicResponse.ok || !creatorsResponse.ok) {
+      throw new Error('Failed to fetch background music or creators');
     }
 
-    const voices = await voicesResponse.json();
+    const background_music = await backgroundMusicResponse.json();
     const creators = await creatorsResponse.json();
 
     return {
-      voices,
       creators,
+      background_music
     };
     
   } catch (error) {

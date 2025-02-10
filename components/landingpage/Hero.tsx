@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import HeroVideoDialog from "@/components/ui/hero-video-dialog";
 import { AvatarCircles } from "@/components/ui/avatar-circles";
+import { LandingProductVideoFeature } from '@/components/ui/landingProductFeature';
 import ProductFeatures from "../ui/videofeature";
 
 const avatars = [
@@ -103,12 +104,16 @@ export function Hero() {
             transition={{ duration: 0.5, delay: 0.6 }}
             className="mt-12"
           >
-            <HeroVideoDialog
-              className=""
-              animationStyle="from-center"
-              videoSrc="https://www.youtube.com/embed/qh3NGpYRG3I?si=4rb-zSdDkVK9qxxb"
-              thumbnailSrc="https://startup-template-sage.vercel.app/hero-light.png"
-              thumbnailAlt="Hero Video"
+            <LandingProductVideoFeature
+              textPosition="center"
+              videoPosition="center"
+              withBackground
+              variant="primary"
+              title="Add your branding & theme"
+              description="Choose from more than 30+ themes or create your own. Upload your logo, set the size and we take care of the rest."
+              autoPlay={false}
+              controls={false}
+              videoSrc="https://cache.shipixen.com/features/3-theme-and-logo.mp4"
             />
           </motion.div>
 
@@ -121,3 +126,7 @@ export function Hero() {
     </div>
   );
 }
+
+
+
+

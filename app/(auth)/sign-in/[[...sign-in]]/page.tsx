@@ -1,7 +1,48 @@
 import { SignUp } from '@clerk/nextjs'
 import Link from 'next/link'
+// import { useSearchParams, useRouter } from 'next/navigation'
+import { useEffect } from 'react'
+import { toast } from 'sonner'
+import {  getCheckoutURL } from '@/lib/lemon-squeezy/actions'; // Adjust the import path as needed
+import { useState } from 'react';
 
 export default function Page() {
+  // const searchParams = useSearchParams()
+  // const router = useRouter()
+  // const redirectTo = searchParams.get('redirect_to')
+  // const planId = searchParams.get('plan_id')
+  // const [checkoutUrl, setCheckoutUrl] = useState('')
+  // const embed = searchParams.get('embed') === 'true'
+
+  // Handle successful sign-up
+  // const handleAfterSignUp = async () => {
+  //   if (redirectTo === 'checkout' && planId) {
+  //     try {
+  //       const checkoutUrl = await getCheckoutURL(Number(planId), embed)
+        
+  //       if (embed && checkoutUrl) {
+  //         window.LemonSqueezy.Url.Open(checkoutUrl)
+  //       } else {
+  //         router.push(checkoutUrl ?? '/')
+  //       }
+  //     } catch (error) {
+  //       console.error('Checkout error:', error)
+  //       toast.error('Failed to process checkout')
+  //       router.push('/dashboard')
+  //     }
+  //   } else {
+  //     router.push('/dashboard')
+  //   }
+  // }
+
+  // Determine initial redirect URL (this will be overridden by handleAfterSignUp)
+  // useEffect(() => {
+  //   handleAfterSignUp()
+  // }, [])
+  // const redirectUrl = redirectTo === 'checkout' && planId
+  //   ? `/checkout?plan=${planId}`
+  //   : '/dashboard'
+
   return (
     <section className="min-h-screen bg-[radial-gradient(ellipse_at_top,_rgba(129,_8,_172,_0.4),_black)]">
       <div className="lg:grid lg:min-h-screen lg:grid-cols-12">
@@ -51,20 +92,10 @@ export default function Page() {
                     formHeader: "text-center",
                   },
                 }}
-                signInUrl="/sign-in"
-                forceRedirectUrl="/dashboard"
+                forceRedirectUrl={"/dashboard"}
+            
               />
             </div>
-
-            <p className="mt-8 text-center text-gray-300">
-              Already have an account?{' '}
-              <Link
-                href="/sign-in"
-                className="font-semibold text-purple-400 hover:text-purple-300 transition-colors"
-              >
-                Sign in
-              </Link>
-            </p>
           </div>
         </main>
       </div>

@@ -1,10 +1,12 @@
 import { Menu, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { ThemeToggle } from './ThemeToggle';
+import { UserButton, useUser } from "@clerk/nextjs";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { isSignedIn } = useUser();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -39,29 +41,26 @@ export function Navbar() {
             </div>
             <div className="hidden md:block">
               <div className="ml-10 flex items-center space-x-6">
-                <a href="#features" className="nav-link">
-                  Features
-                </a>
-                <a href="#pricing" className="nav-link">
-                  Pricing
-                </a>
-                <a href="#solution" className="nav-link">
-                  Solution
-                </a>
-                <a href="#testimonials" className="nav-link">
-                  Testimonials
-                </a>
+                <a href="#features" className="nav-link">Features</a>
+                <a href="#pricing" className="nav-link">Pricing</a>
+                <a href="#solution" className="nav-link">Solution</a>
+                <a href="#testimonials" className="nav-link">Testimonials</a>
                 <ThemeToggle />
-                <a
-                  href="/sign-up"
-                  className="inline-flex items-center px-6 py-2.5 border border-transparent text-sm font-medium rounded-full text-white bg-landing_primary-600 hover:bg-landing_primary-700 transition-all duration-200 shadow-md hover:shadow-lg hover:scale-105"
-                >
-                  Get Started
-                </a>
+                {isSignedIn ? (
+                  <UserButton afterSignOutUrl="/" />
+                ) : (
+                  <a
+                    href="/sign-up"
+                    className="inline-flex items-center px-6 py-2.5 border border-transparent text-sm font-medium rounded-full text-white bg-landing_primary-600 hover:bg-landing_primary-700 transition-all duration-200 shadow-md hover:shadow-lg hover:scale-105"
+                  >
+                    Get Started
+                  </a>
+                )}
               </div>
             </div>
             <div className="md:hidden flex items-center space-x-2">
               <ThemeToggle />
+              {isSignedIn && <UserButton afterSignOutUrl="/" />}
               <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="inline-flex items-center justify-center p-2 rounded-full text-gray-400 hover:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800"
@@ -78,24 +77,18 @@ export function Navbar() {
         <div className="md:hidden absolute w-full">
           <div className="mx-4 mt-2 rounded-2xl bg-white/95 dark:bg-gray-900/95 shadow-lg backdrop-blur-sm p-4">
             <div className="space-y-2">
-              <a href="#features" className="mobile-nav-link">
-                Features
-              </a>
-              <a href="#pricing" className="mobile-nav-link">
-                Pricing
-              </a>
-              <a href="#solution" className="mobile-nav-link">
-                Solution
-              </a>
-              <a href="#testimonials" className="mobile-nav-link">
-                Testimonials
-              </a>
-              <a
-                href="#"
-                className="block px-4 py-2.5 rounded-full text-center text-base font-medium text-white bg-landing_primary-600 hover:bg-landing_primary-700 transition-all duration-200 hover:scale-105"
-              >
-                Get Started
-              </a>
+              <a href="#features" className="mobile-nav-link">Features</a>
+              <a href="#pricing" className="mobile-nav-link">Pricing</a>
+              <a href="#solution" className="mobile-nav-link">Solution</a>
+              <a href="#testimonials" className="mobile-nav-link">Testimonials</a>
+              {!isSignedIn && (
+                <a
+                  href="#"
+                  className="block px-4 py-2.5 rounded-full text-center text-base font-medium text-white bg-landing_primary-600 hover:bg-landing_primary-700 transition-all duration-200 hover:scale-105"
+                >
+                  Get Started
+                </a>
+              )}
             </div>
           </div>
         </div>

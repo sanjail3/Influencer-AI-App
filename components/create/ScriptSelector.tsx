@@ -88,7 +88,7 @@ export function ScriptSelector({
     return (
       <CreatorSelector
         creators={creatorData.creators}
-        voices={creatorData.voices}
+        backgroundMusic={creatorData.background_music}
         onBack={() => setShowCreatorSelector(false)}
         onNext={(creator, voice) => {
           console.log('Selected creator:', creator, 'voice:', voice);

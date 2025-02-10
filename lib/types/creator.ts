@@ -6,18 +6,15 @@ export interface Creator {
   description: string;
 }
 
-export interface Voice {
-  voice_id: string;
+export interface BackgroundMusic {
+  id: string;
   name: string;
-  accent: string;
-  description: string;
-  age: string;
-  gender: 'male' | 'female';
-  use_case: string;
+  genre: string;
+  duration: string;
   preview_url: string;
 }
 
 export interface CreatorResponse {
   creators: Creator[];
-  voices: Voice[];
+  background_music: BackgroundMusic[];
 }

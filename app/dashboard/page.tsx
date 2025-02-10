@@ -11,7 +11,6 @@ export default function Dashboard() {
     <DashboardLayout>
       <CurvedDashboardHero />
       <FeaturedProducts />
-      <PopularTools />
     </DashboardLayout>
   );
 }

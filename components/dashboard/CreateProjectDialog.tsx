@@ -12,7 +12,9 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2, AlertCircle } from "lucide-react";
+import { Loader2, AlertCircle, CreditCard } from "lucide-react";
+import { Toaster, toast } from "sonner";
+
 
 interface CreateProjectDialogProps {
   children?: React.ReactNode;
@@ -23,20 +25,61 @@ export function CreateProjectDialog({ children }: CreateProjectDialogProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [projectName, setProjectName] = useState('');
   const [isCreating, setIsCreating] = useState(false);
+  const [isCheckingCredits, setIsCheckingCredits] = useState(false);
   const [error, setError] = useState('');
   const [isFocused, setIsFocused] = useState(false);
+
+  const checkCredits = async () => {
+    setIsCheckingCredits(true);
+    try {
+      const response = await fetch('/api/user/credits');
+      if (!response.ok) throw new Error('Failed to fetch credits');
+      const credits = await response.json();
+      
+      if (credits.current < 5) {
+        toast(
+          <div className="flex flex-col gap-2">
+            <p>You need at least 5 credits to create an AI ad. You currently have {credits.current} credits.</p>
+            <Button 
+              onClick={() => {
+                setIsDialogOpen(false);
+                router.push('/pricing');
+              }}
+              className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-400 
+                hover:to-pink-400 w-full mt-2"
+            >
+              <CreditCard className="mr-2 h-4 w-4" />
+              Get More Credits
+            </Button>
+          </div>
+        );
+        return false;
+      }
+      return true;
+    } catch (error) {
+      console.error('Error checking credits:', error);
+      toast.error(
+ "Failed to check credits. Please try again.",
+    );
+      return false;
+    } finally {
+      setIsCheckingCredits(false);
+    }
+  };
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    setIsCreating(true);
 
     if (projectName.trim().length < 3) {
       setError('Project name must be at least 3 characters long');
-      setIsCreating(false);
       return;
     }
 
+    const hasEnoughCredits = await checkCredits();
+    if (!hasEnoughCredits) return;
+
+    setIsCreating(true);
     try {
       const response = await fetch('/api/projects', {
         method: 'POST',
@@ -144,7 +187,7 @@ export function CreateProjectDialog({ children }: CreateProjectDialogProps) {
             </Button>
             <Button 
               type="submit" 
-              disabled={isCreating}
+              disabled={isCreating || isCheckingCredits}
               className="w-full sm:w-auto bg-gradient-to-r from-purple-500 to-pink-500 
                 hover:from-purple-400 hover:to-pink-400 disabled:opacity-50 
                 disabled:cursor-not-allowed transition-all duration-300 font-semibold text-white
@@ -154,6 +197,11 @@ export function CreateProjectDialog({ children }: CreateProjectDialogProps) {
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Creating...
+                </>
+              ) : isCheckingCredits ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Checking Credits...
                 </>
               ) : (
                 "Create Project"

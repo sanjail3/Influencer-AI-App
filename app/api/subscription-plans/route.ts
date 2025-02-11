@@ -13,8 +13,7 @@ export async function GET() {
     let allPlans: SubscriptionPlan[] =
         await prisma.subscriptionPlan.findMany();
 
-    // If there are no plans in the database, sync them from Lemon Squeezy.
-    // You might want to add logic to sync plans periodically or a webhook handler.
+    
     if (!allPlans.length) {
         allPlans = await syncPlans();
     }

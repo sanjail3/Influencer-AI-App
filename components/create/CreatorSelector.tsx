@@ -163,7 +163,7 @@ export function CreatorSelector({ creators, backgroundMusic, onBack, onNext, scr
 
   
 
-  const resend = new Resend();
+  // const resend = new Resend(process.env.RESEND_API_KEY);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -224,26 +224,26 @@ export function CreatorSelector({ creators, backgroundMusic, onBack, onNext, scr
           })}`;
     
           // Send an email with the video page link
-          try {
-            const { data, error } = await resend.emails.send({
-              from: 'sanjai.l2021ai@sece.ac.in', // Replace with your email
-              to: 'user@example.com', // Replace with the user's email
-              subject: 'Your Video is Ready!',
-              react: VideoCreatedTemplate({
-                videoPageUrl,
-                videoTitle: 'Your Custom Video', // Replace with the actual video title
-                userName: 'User' // Replace with the user's name
-              }),
-            });
+          // try {
+          //   const { data, error } = await resend.emails.send({
+          //     from: 'sanjai.l2021ai@sece.ac.in', // Replace with your email
+          //     to: 'user@example.com', // Replace with the user's email
+          //     subject: 'Your Video is Ready!',
+          //     react: VideoCreatedTemplate({
+          //       videoPageUrl,
+          //       videoTitle: 'Your Custom Video', // Replace with the actual video title
+          //       userName: 'User' // Replace with the user's name
+          //     }),
+          //   });
     
-            if (error) {
-              console.error('Error sending video creation email:', error);
-            } else {
-              console.log('Video creation email sent:', data);
-            }
-          } catch (emailError) {
-            console.error('Failed to send video creation email:', emailError);
-          }
+          //   if (error) {
+          //     console.error('Error sending video creation email:', error);
+          //   } else {
+          //     console.log('Video creation email sent:', data);
+          //   }
+          // } catch (emailError) {
+          //   console.error('Failed to send video creation email:', emailError);
+          // }
     
           // Redirect to the video page
           router.push(videoPageUrl);

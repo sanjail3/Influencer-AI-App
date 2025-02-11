@@ -83,13 +83,20 @@ export function Pricing({
   };
 
   return (
-    <section id="pricing" className="py-24 bg-gray-50 dark:bg-gray-800">
+    <section id="pricing" className="py-24 min-h-screen w-full py-16 px-4 transition-colors duration-300 bg-gray-50 dark:bg-gray-950">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col items-center justify-center text-center mb-16">
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold">
-            <RoughNotation type="highlight" show={true} color="#7719ff">
-              Pricing
-            </RoughNotation>
+          <RoughNotation
+                  type="highlight"
+                  show={true}
+                  color="#7719ff"
+                  animationDelay={300}
+                  animationDuration={800}
+                  padding={[5, 10]}
+                >
+                  Pricing
+                </RoughNotation>
           </h2>
         </div>
 
@@ -103,7 +110,7 @@ export function Pricing({
                 ref={switchRef}
                 checked={isAnnual}
                 onCheckedChange={handleToggle}
-                className="relative inline-flex items-center h-6 rounded-full w-11 bg-gray-200 dark:bg-gray-600"
+                className="relative inline-flex h-6 w-11 items-center rounded-full bg-white/50 shadow-inner dark:bg-gray-700 data-[state=checked]:bg-gradient-to-r data-[state=checked]:from-purple-500 data-[state=checked]:to-pink-500 [&>span]:data-[state=unchecked]:bg-gray-200 [&>span]:data-[state=checked]:bg-white dark:[&>span]:data-[state=unchecked]:bg-gray-400"
               />
             </Label>
             <span className="ml-2 font-semibold text-gray-700 dark:text-gray-200">

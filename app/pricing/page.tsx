@@ -50,7 +50,7 @@ const IntroSection = () => {
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="max-w-4xl mx-auto text-center mb-20 px-4"
+      className="max-w-4xl mx-auto text-center px-4"
     >
       <motion.h1 
         className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-purple-400 via-pink-500 to-purple-400 text-transparent bg-clip-text"
@@ -62,7 +62,7 @@ const IntroSection = () => {
       </motion.h1>
       
       <motion.p 
-        className="text-xl text-gray-300 mb-12"
+        className="text-xl text-gray-300 mb-8"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.4 }}
@@ -70,7 +70,7 @@ const IntroSection = () => {
         Choose the perfect plan that scales with your needs. No hidden fees, just pure value.
       </motion.p>
 
-      <div className="grid md:grid-cols-3 gap-8 mb-12">
+      <div className="grid md:grid-cols-3 gap-6 mb-8">
         {features.map((feature, index) => (
           <motion.div
             key={index}
@@ -90,7 +90,7 @@ const IntroSection = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1 }}
-        className="flex justify-center"
+        className="flex justify-center mb-8"
       >
         <ArrowDown className="w-8 h-8 text-purple-400 animate-bounce" />
       </motion.div>
@@ -98,7 +98,6 @@ const IntroSection = () => {
   );
 };
 
-// Fetch subscription plans from the API
 async function fetchSubscriptionPlans() {
   try {
     const response = await fetch('/api/subscription-plans');
@@ -222,17 +221,22 @@ function PricingPage() {
 
   return (
     <div 
-      className="min-h-screen overflow-y-auto"
+      className="min-h-screen overflow-y-auto pt-16 pb-10"
       style={{
         background: `radial-gradient(ellipse at top, rgba(129, 8, 172, 0.4), black)`,
       }}
     >
-      <IntroSection />
-      <Pricing
-        plans={plans}
-        title="Simple, Transparent Pricing"
-        description="Choose the plan that works for you\nAll plans include access to our platform, lead generation tools, and dedicated support."
-      />
+      <div className="space-y-12">
+        <IntroSection />
+        
+        <div className="max-w-6xl mx-auto px-4 md:px-8">
+          <Pricing
+            plans={plans}
+            title="Simple, Transparent Pricing"
+            description="Choose the plan that works for you\nAll plans include access to our platform, lead generation tools, and dedicated support."
+          />
+        </div>
+      </div>
     </div>
   );
 }

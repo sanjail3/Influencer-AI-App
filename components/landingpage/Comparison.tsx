@@ -85,14 +85,15 @@ const UGCComparison = () => {
     },
   ];
 
+
   return (
-    <div className="min-h-screen bg-[#121212] flex flex-col items-center justify-center p-6">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col items-center justify-center p-6">
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         className="text-center mb-16 space-y-4"
       >
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white">
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-black dark:text-white">
           The Future of Content Creation
         </h1>
         <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold">

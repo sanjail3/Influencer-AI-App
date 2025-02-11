@@ -95,10 +95,13 @@ export default function ProductFeatures() {
 
   return (
     <section className="storybook-fix flex w-full flex-col items-center gap-8 py-16">
-      <h2 className="text-4xl font-bold text-gray-800 text-center">AI-Generated UGC Ads That Look 100% Real!</h2>
-      <p className="text-gray-600 max-w-3xl text-center text-lg">
-      AI-generated influencers that look, sound, and sell like real people!
-      </p>
+      <h2 className="text-4xl font-bold text-gray-800 dark:text-gray-100 text-center">
+  AI-Generated UGC Ads That Look 
+  <span className="font-extrabold text-yellow-500"> 100% Real!</span> 
+</h2>
+<p className="text-gray-600 dark:text-gray-300 max-w-3xl text-center text-lg">
+  AI-generated influencers that look, sound, and sell like real people!
+</p>
 
       <div className="relative flex w-full flex-wrap justify-center gap-16 px-6 py-16 sm:flex-row sm:gap-8 lg:max-w-screen-xl">
         <FeatureCard

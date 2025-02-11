@@ -157,9 +157,16 @@ const HowItWorks = () => {
       <div className="max-w-6xl mx-auto">
       <div className="flex flex-col items-center justify-center text-center mb-16">
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold">
-          <RoughNotation type="highlight" show={true} color="#7719ff">
-           How It Works
-          </RoughNotation>
+          <RoughNotation
+                  type="highlight"
+                  show={true}
+                  color="#7719ff"
+                  animationDelay={300}
+                  animationDuration={800}
+                  padding={[5, 10]}
+                >
+                  How It Works
+                </RoughNotation>
           </h2>
         </div>
         <p className="text-center mb-16 text-lg text-gray-600 dark:text-gray-400">

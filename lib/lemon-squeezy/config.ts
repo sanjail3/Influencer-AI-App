@@ -12,6 +12,10 @@ export function configureLemonSqueezy() {
         'LEMONSQUEEZY_WEBHOOK_SECRET',
     ];
 
+        console.log("API Key:", process.env.LEMONSQUEEZY_API_KEY ? "Exists ✅" : "❌ Missing");
+console.log("Store ID:", process.env.LEMONSQUEEZY_STORE_ID ? "Exists ✅" : "❌ Missing");
+console.log("Webhook Secret:", process.env.LEMONSQUEEZY_WEBHOOK_SECRET ? "Exists ✅" : "❌ Missing");
+
     const missingVars = requiredVars.filter((varName) => !process.env[varName]);
 
     if (missingVars.length > 0) {

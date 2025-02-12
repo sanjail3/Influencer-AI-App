@@ -1,0 +1,24 @@
+
+{
+    "functions": {
+      "api/fileupload": {
+        "memory": 1024,
+        "maxDuration": 60
+      }
+    },
+    "routes": [
+      {
+        "source": "/api/fileupload",
+        "destination": "/api/fileupload",
+        "methods": ["POST", "DELETE"],
+        "headers": {
+          "Access-Control-Allow-Methods": "POST, DELETE",
+          "Access-Control-Allow-Headers": "Content-Type",
+          "Access-Control-Allow-Origin": "*"
+        }
+      }
+    ],
+    "bodyParser": {
+      "sizeLimit": "200mb"
+    }
+  }

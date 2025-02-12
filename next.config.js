@@ -5,6 +5,12 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   images: { unoptimized: true },
+
+  api: {
+    bodyParser: {
+      sizeLimit: '200mb',
+    },
+  },
 };
 
 module.exports = nextConfig;

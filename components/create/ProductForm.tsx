@@ -10,6 +10,7 @@ import { generateScripts } from '@/lib/api/scriptApi';
 import { Script } from '@/lib/types/script';
 import Image from 'next/image';
 import { MediaUpload } from '@/components/ui/file-upload';
+import { AzureStorageClient,uploadFiles } from '@/lib/azure_storage_client';
 
 interface ProductFormProps {
   productInfo: {
@@ -54,6 +55,10 @@ export function ProductForm({ productInfo, screenshot, onBack, screenshot_data, 
     { key: 'pricing', rows: 2, placeholder: 'Enter the pricing details...' }
   ];
 
+  
+
+
+
   const handleNext = async () => {
     setIsGeneratingScripts(true);
     try {
@@ -64,13 +69,16 @@ export function ProductForm({ productInfo, screenshot, onBack, screenshot_data, 
         });
         formData.append("projectId", projectId || "");
 
-        const response = await fetch("/api/fileupload", {
-          method: "POST",
-          body: formData,
-        });
+        if (!projectId) {
+          throw new Error('Project ID not found');
+        }
 
-        const result = await response.json();
-        if (result.success) {
+        const response = await uploadFiles(files,projectId);
+
+        console.log(response)
+
+        
+        if (response) {
           alert("Files uploaded successfully!");
         } else {
           alert("Failed to upload files.");

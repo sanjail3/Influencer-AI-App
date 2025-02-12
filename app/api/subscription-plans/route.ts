@@ -21,6 +21,8 @@ export async function GET() {
     // if (!allPlans.length) {
     //     return <p>No plans available.</p>;
     // }
+
+    console.log(allPlans);
     return NextResponse.json(allPlans);
   } catch (error) {
     return NextResponse.json(

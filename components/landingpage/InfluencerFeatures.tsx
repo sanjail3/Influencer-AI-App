@@ -7,20 +7,21 @@ import { motion } from "framer-motion";
 import { IconBrandYoutubeFilled } from "@tabler/icons-react";
 import Link from "next/link";
 
+
 export function InfluencerFeatures() {
   const features = [
     {
-      title: "✅ Instant AI Avatars",
+      title: "✅ One-Click Ad Creation",
       description:
-        "No need for expensive influencers. Our AI generates <span class='text-teal-500 dark:text-teal-300'>human-like creators</span> tailored to your brand.",
+       "Just paste your website link, and our AI <span class='text-teal-500 dark:text-teal-300'>writes the script</span>, generates the video, and delivers ad-ready content.",
       skeleton: <SkeletonOne />,
       className:
         "col-span-1 md:col-span-3 lg:col-span-3 border-b md:border-r dark:border-neutral-800",
     },
     {
-      title: "✅ One-Click Ad Creation",
+      title: "✅ Instant AI Avatars",
       description:
-        "Just paste your website link, and our AI <span class='text-teal-500 dark:text-teal-300'>writes the script</span>, generates the video, and delivers ad-ready content.",
+        "No need for expensive influencers. Our AI generates <span class='text-teal-500 dark:text-teal-300'>human-like creators</span> tailored to your brand.",
       skeleton: <SkeletonTwo />,
       className:
         "col-span-1 md:col-span-3 lg:col-span-3 border-b md:border-r dark:border-neutral-800",
@@ -114,7 +115,7 @@ export const SkeletonOne = () => {
       <div className="w-full p-5 mx-auto bg-white dark:bg-neutral-900 shadow-2xl group h-full">
         <div className="flex flex-1 w-full h-full flex-col space-y-2">
           <Image
-            src="https://ui.aceternity.com/_next/image?url=%2Flinear.webp&w=1920&q=75"
+            src="./ad-creation-2.png"
             alt="header"
             width={800}
             height={800}
@@ -154,11 +155,10 @@ export const SkeletonThree = () => {
 
 export const SkeletonTwo = () => {
   const images = [
-    "https://images.unsplash.com/photo-1517322048670-4fba75cbbb62?q=80&w=3000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    "https://images.unsplash.com/photo-1573790387438-4da905039392?q=80&w=3425&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    "https://images.unsplash.com/photo-1555400038-63f5ba517a47?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    "https://images.unsplash.com/photo-1554931670-4ebfabf6e7a9?q=80&w=3387&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    "https://images.unsplash.com/photo-1546484475-7f7bd55792da?q=80&w=2581&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "./av-1.png",
+    "./av-2.png",
+    "./av-3.png",
+    "./av-4.png",
   ];
 
   const imageVariants = {

@@ -1,8 +1,10 @@
 import { Menu, X, LayoutDashboard } from 'lucide-react';
+import { Rocket, Sparkles } from "lucide-react";
 import { useState, useEffect } from 'react';
 import { ThemeToggle } from './ThemeToggle';
 import { UserButton, useUser } from "@clerk/nextjs";
 import Link from 'next/link';
+import Image from 'next/image';
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -33,25 +35,28 @@ export function Navbar() {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <div className="flex items-center">
-              <a href="#" className="flex items-center space-x-3">
-                <span className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-landing_primary-500 to-landing_primary-700 dark:from-landing_primary-400 dark:to-landing_primary-600 bg-clip-text text-transparent">
+            <div className="flex items-center flex-shrink-0">
+              <Link href="/" className="flex items-center space-x-2 sm:space-x-3">
+                <Rocket className="h-6 w-6 xs:h-7 xs:w-7 sm:h-8 sm:w-8 md:h-10 md:w-10 text-purple-600 dark:text-purple-400" />
+                <span className="text-xl xs:text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-landing_primary-500 to-landing_primary-700 dark:from-landing_primary-400 dark:to-landing_primary-600 bg-clip-text text-transparent whitespace-nowrap">
                   Influencer AI
                 </span>
-              </a>
+              </Link>
             </div>
             <div className="hidden md:block">
               <div className="ml-10 flex items-center space-x-8">
-                <a href="#features" className="text-lg font-medium text-gray-700 hover:text-landing_primary-600 dark:text-gray-200 dark:hover:text-landing_primary-400 transition-colors">Features</a>
-                <a href="#pricing" className="text-lg font-medium text-gray-700 hover:text-landing_primary-600 dark:text-gray-200 dark:hover:text-landing_primary-400 transition-colors">Pricing</a>
-                <a href="#solution" className="text-lg font-medium text-gray-700 hover:text-landing_primary-600 dark:text-gray-200 dark:hover:text-landing_primary-400 transition-colors">Solution</a>
-                <a href="#testimonials" className="text-lg font-medium text-gray-700 hover:text-landing_primary-600 dark:text-gray-200 dark:hover:text-landing_primary-400 transition-colors">Testimonials</a>
-                <ThemeToggle />
+                <a href="#features" className="text-base sm:text-lg lg:text-xl font-medium text-gray-800 hover:text-landing_primary-600 dark:text-gray-100 dark:hover:text-landing_primary-400 transition-colors">Features</a>
+                <a href="#pricing" className="text-base sm:text-lg lg:text-xl font-medium text-gray-800 hover:text-landing_primary-600 dark:text-gray-100 dark:hover:text-landing_primary-400 transition-colors">Pricing</a>
+                <a href="#benefits" className="text-base sm:text-lg lg:text-xl font-medium text-gray-800 hover:text-landing_primary-600 dark:text-gray-100 dark:hover:text-landing_primary-400 transition-colors">Benefits</a>
+                <a href="#howitworks" className="text-base sm:text-lg lg:text-xl font-medium text-gray-800 hover:text-landing_primary-600 dark:text-gray-100 dark:hover:text-landing_primary-400 transition-colors">How it works</a>
+                <div className="border border-gray-200 dark:border-gray-700 rounded-full p-1">
+                  <ThemeToggle />
+                </div>
                 {isSignedIn ? (
                   <div className="flex items-center space-x-4">
                     <Link
                       href="/dashboard"
-                      className="inline-flex items-center px-6 py-2.5 space-x-2 border border-transparent text-base font-medium rounded-full text-white bg-landing_primary-600 hover:bg-landing_primary-700 dark:bg-landing_primary-600 dark:hover:bg-landing_primary-700 transition-all duration-200 shadow-md hover:shadow-lg hover:scale-105"
+                      className="inline-flex items-center px-6 py-2.5 space-x-2 border border-transparent text-lg font-medium rounded-full text-white bg-landing_primary-600 hover:bg-landing_primary-700 dark:bg-landing_primary-600 dark:hover:bg-landing_primary-700 transition-all duration-200 shadow-md hover:shadow-lg hover:scale-105"
                     >
                       <LayoutDashboard className="w-5 h-5" />
                       <span>Dashboard</span>
@@ -80,7 +85,9 @@ export function Navbar() {
               </div>
             </div>
             <div className="md:hidden flex items-center space-x-4">
-              <ThemeToggle />
+              <div className="border border-gray-200 dark:border-gray-700 rounded-full p-1">
+                <ThemeToggle />
+              </div>
               {isSignedIn && (
                 <>
                   <Link
@@ -119,10 +126,10 @@ export function Navbar() {
         <div className="md:hidden absolute w-full">
           <div className="mx-4 mt-2 rounded-2xl bg-white/95 dark:bg-gray-900/95 shadow-lg backdrop-blur-sm p-6">
             <div className="space-y-4">
-              <a href="#features" className="block text-xl font-medium text-gray-700 hover:text-landing_primary-600 dark:text-gray-200 dark:hover:text-landing_primary-400 transition-colors">Features</a>
-              <a href="#pricing" className="block text-xl font-medium text-gray-700 hover:text-landing_primary-600 dark:text-gray-200 dark:hover:text-landing_primary-400 transition-colors">Pricing</a>
-              <a href="#solution" className="block text-xl font-medium text-gray-700 hover:text-landing_primary-600 dark:text-gray-200 dark:hover:text-landing_primary-400 transition-colors">Solution</a>
-              <a href="#testimonials" className="block text-xl font-medium text-gray-700 hover:text-landing_primary-600 dark:text-gray-200 dark:hover:text-landing_primary-400 transition-colors">Testimonials</a>
+              <a href="#features" className="block text-xl font-medium text-gray-800 hover:text-landing_primary-600 dark:text-gray-100 dark:hover:text-landing_primary-400 transition-colors">Features</a>
+              <a href="#pricing" className="block text-xl font-medium text-gray-800 hover:text-landing_primary-600 dark:text-gray-100 dark:hover:text-landing_primary-400 transition-colors">Pricing</a>
+              <a href="#benefits" className="block text-xl font-medium text-gray-800 hover:text-landing_primary-600 dark:text-gray-100 dark:hover:text-landing_primary-400 transition-colors">Benefits</a>
+              <a href="#howitworks" className="block text-xl font-medium text-gray-800 hover:text-landing_primary-600 dark:text-gray-100 dark:hover:text-landing_primary-400 transition-colors">How It Works</a>
               {!isSignedIn && (
                 <a
                   href="/sign-up"

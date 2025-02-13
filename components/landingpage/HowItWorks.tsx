@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Globe, Code2, UserSquare2, Video, ArrowRight, Play } from 'lucide-react';
 import { RoughNotation } from 'react-rough-notation';
+import Link from 'next/link';
 
 const HowItWorks = () => {
   const [activeCard, setActiveCard] = useState(0);
@@ -153,6 +154,7 @@ const HowItWorks = () => {
   };
 
   return (
+    <section id="howitworks">
     <div className="min-h-screen w-full py-16 px-4 transition-colors duration-300 bg-gray-50 dark:bg-gray-950">
       <div className="max-w-6xl mx-auto">
       <div className="flex flex-col items-center justify-center text-center mb-16">
@@ -180,13 +182,16 @@ const HowItWorks = () => {
         </div>
 
         <div className="mt-16 text-center">
-          <button className="group relative px-8 py-4 rounded-full font-bold text-white overflow-hidden">
+          <Link href="/sign-up">
+          <button className="group relative px-8 py-4 rounded-full font-bold text-white overflow-hidden" >
             <div className="absolute inset-0 bg-gradient-to-r from-purple-500 via-purple-600 to-blue-600 dark:from-purple-600 dark:via-purple-700 dark:to-blue-800 transition-all duration-300 group-hover:scale-110" />
+            
             <span className="relative flex items-center justify-center gap-2">
               Get Started Now
               <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
             </span>
           </button>
+          </Link>
         </div>
       </div>
 
@@ -200,6 +205,7 @@ const HowItWorks = () => {
         }
       `}</style>
     </div>
+    </section>
   );
 };
 

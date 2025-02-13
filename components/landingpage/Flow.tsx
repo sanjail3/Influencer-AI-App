@@ -61,7 +61,7 @@ designed for your convenience.`;
   };
 
   return (
-    <div className="w-full transition-colors duration-200">
+    <div className="w-full transition-colors duration-200 hidden sm:block">
       <div
         className="relative w-full max-w-7xl mx-auto p-4 sm:p-6 lg:p-8"
         ref={containerRef}
@@ -194,7 +194,7 @@ designed for your convenience.`;
               </div>
             </Card> */}
 
-<div className="flex-1 flex flex-col items-center">
+             <div className="flex-1 flex flex-col items-center">
                 <VideoPlayer videoUrl={"./final.mp4"} />
                
               </div>

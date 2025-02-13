@@ -35,7 +35,7 @@ function App() {
       <HowItWorks />
       <FlowDiagram />
       <PricingPage />
-      <TestimonialsPage />
+      {/* <TestimonialsPage /> */}
       <FAQ />
       <CTA />
       <Footer />

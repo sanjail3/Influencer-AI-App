@@ -68,10 +68,12 @@ export function Features() {
     //     </div>
     //   </div>
     // </section>
+    <section id="features">
     <div className="min-h-screen w-full">
       <div className="">
         <InfluencerFeatures/>
       </div>
     </div>
+    </section>
   );
 }

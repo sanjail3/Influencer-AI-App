@@ -2,7 +2,7 @@ import { prisma } from '@/lib/db';
 import type { WebhookEvent } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
-import { WelcomeTemplate } from '@components/email/Welcome-template';
+import { WelcomeEmailTemplate } from '@components/email/Welcome-template';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -52,10 +52,10 @@ export async function POST(req: Request) {
                 // Send a welcome email
                 try {
                     const { data, error } = await resend.emails.send({
-                        from: 'Acme <onboarding@resend.dev>',
-                        to: "sanjaisam333@gmail.com",
+                        from: 'sanjai@influencer-ai.in',
+                        to: email,
                         subject: 'Welcome to Our Community',
-                        react: WelcomeTemplate({ firstName: first_name || 'User' }),
+                        react: WelcomeEmailTemplate({ firstName: first_name || 'User'}),
                     });
 
                     if (error) {

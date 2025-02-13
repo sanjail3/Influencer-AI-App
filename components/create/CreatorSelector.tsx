@@ -11,7 +11,8 @@ import { useRouter } from 'next/navigation';
 import { useSearchParams } from 'next/navigation';
 import { Toaster, toast } from 'sonner';
 import { Resend } from 'resend';
-import { VideoCreatedTemplate } from '@components/email/VideoCreatedTemplate';
+import { useUser } from '@clerk/nextjs';
+import  VideoCreatedTemplate  from '@components/email/VideoCreatedTemplate';
 
 interface CreatorSelectorProps {
   creators: Creator[];
@@ -64,6 +65,7 @@ interface TaskProgress {
 }
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+
 
 
 async function generateVideo(videoData: VideoData, projectId: string, userId: string) {
@@ -147,6 +149,12 @@ export function CreatorSelector({ creators, backgroundMusic, onBack, onNext, scr
   console.log(backgroundMusic);
   const [selectedCreator, setSelectedCreator] = useState<Creator | null>(null);
 
+  const { user, isLoaded } = useUser();
+  if(!user) return null;
+  if (!isLoaded) return null;
+  const email = user.emailAddresses[0]?.emailAddress;
+  
+
   
   const [selectedMusic, setSelectedMusic] = useState<BackgroundMusic | null>(null);
   const [activeAudio, setActiveAudio] = useState<string | null>(null);
@@ -169,6 +177,8 @@ export function CreatorSelector({ creators, backgroundMusic, onBack, onNext, scr
   const searchParams = useSearchParams();
   const projectId = searchParams.get('projectId');
   const base64string = screenshot_data.replace(/^data:image\/\w+;base64,/, '');
+
+  const resend = new Resend(process.env.NEXT_PUBLIC_RESEND_API_KEY);
 
   const [videoData, setVideoData] = useState<VideoData>({
     voice: {
@@ -224,26 +234,26 @@ export function CreatorSelector({ creators, backgroundMusic, onBack, onNext, scr
           })}`;
     
           // Send an email with the video page link
-          // try {
-          //   const { data, error } = await resend.emails.send({
-          //     from: 'sanjai.l2021ai@sece.ac.in', // Replace with your email
-          //     to: 'user@example.com', // Replace with the user's email
-          //     subject: 'Your Video is Ready!',
-          //     react: VideoCreatedTemplate({
-          //       videoPageUrl,
-          //       videoTitle: 'Your Custom Video', // Replace with the actual video title
-          //       userName: 'User' // Replace with the user's name
-          //     }),
-          //   });
+          try {
+            const { data, error } = await resend.emails.send({
+              from: 'sanjai@influencer-ai.in', // Replace with your email
+              to: email, // Replace with the user's email
+              subject: 'Your Video is Ready!',
+              react: VideoCreatedTemplate({
+                videoPageUrl,
+                videoTitle: 'Your Custom Video', // Replace with the actual video title
+                userName: 'User' // Replace with the user's name
+              }),
+            });
     
-          //   if (error) {
-          //     console.error('Error sending video creation email:', error);
-          //   } else {
-          //     console.log('Video creation email sent:', data);
-          //   }
-          // } catch (emailError) {
-          //   console.error('Failed to send video creation email:', emailError);
-          // }
+            if (error) {
+              console.error('Error sending video creation email:', error);
+            } else {
+              console.log('Video creation email sent:', data);
+            }
+          } catch (emailError) {
+            console.error('Failed to send video creation email:', emailError);
+          }
     
           // Redirect to the video page
           router.push(videoPageUrl);

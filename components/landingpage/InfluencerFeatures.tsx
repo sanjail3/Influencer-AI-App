@@ -133,15 +133,15 @@ export const SkeletonOne = () => {
 export const SkeletonThree = () => {
   return (
     <Link
-      href="https://www.youtube.com/watch?v=RPa3_AD1_Vs"
+      href="/"
       target="__blank"
       className="relative flex gap-10 h-full group/image"
     >
       <div className="w-full mx-auto bg-transparent dark:bg-transparent group h-full">
         <div className="flex flex-1 w-full h-full flex-col space-y-2 relative">
-          <IconBrandYoutubeFilled className="h-20 w-20 absolute z-10 inset-0 text-red-500 m-auto" />
+
           <Image
-            src="https://assets.aceternity.com/fireship.jpg"
+            src="./creators.png"
             alt="header"
             width={800}
             height={800}

@@ -16,17 +16,13 @@ const FlowDiagram = () => {
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
 
-  const scriptContent = `choose the KUBI SU7.
-First its 580W motor and 45 kPa
-suction make it perfect for
-tackling pet hair and dust.
-Second enjoy 70 minutes of
-runtime with Smart Dust
-Detection for efficient
-cleaning.
-And third with a 1 3L dustbin
-and LED touchscreen it's
-designed for your convenience.`;
+  const scriptContent = `Tired of the hassle of creating high quality ads?
+Influencer AI is a game changer with features like one click ad creation, instant AI avatars, and 10x faster delivery.
+It's never been easier to generate engaging UGC ads.
+Plus, it's affordable and scalable, reducing ad costs by 70%.Need AB testing, done.
+Influencer AI gives you ad-ready content in minutes.
+Don't wait.Try influencer AI today and transform your marketing.
+`;
 
   const [typedScript, setTypedScript] = useState('');
   const [isTypingComplete, setIsTypingComplete] = useState(false);
@@ -99,7 +95,7 @@ designed for your convenience.`;
                     R
                   </div>
                   <div className="flex-1">
-                    <div className="font-medium text-sm sm:text-base text-gray-900 dark:text-gray-100">Rebeca</div>
+                    <div className="font-medium text-sm sm:text-base text-gray-900 dark:text-gray-100">Emma</div>
                     <div className="text-xs text-gray-500 dark:text-gray-400">Young Woman</div>
                   </div>
                   {isVideoPlaying && (

@@ -107,10 +107,10 @@ export default function ProductFeatures() {
         <FeatureCard
           ref={cardRef}
           feature={{
-            category: "Vases",
-            videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4",
+            category: "AI Influencers",
+            videoUrl: "./001.mp4",
             posterUrl: "https://via.placeholder.com/400x500?text=Vase+Thumbnail",
-            title: "Elegant Swirling Glass Vase",
+            title: "Maya",
           }}
           initial={{
             x: cardWidth,
@@ -134,9 +134,9 @@ export default function ProductFeatures() {
 
         <FeatureCard
           feature={{
-            category: "Jugs",
-            title: "Artisanal Ceramic Jug",
-            videoUrl: "https://www.w3schools.com/html/movie.mp4",
+            category: "AI Influencers",
+            title: "Emma",
+            videoUrl: "./004.mp4",
             posterUrl: "https://via.placeholder.com/400x500?text=Jug+Thumbnail",
           }}
           initial={{
@@ -156,9 +156,9 @@ export default function ProductFeatures() {
 
         <FeatureCard
           feature={{
-            category: "Bottles",
-            title: "Colorful Gradient Glass Bottle",
-            videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4",
+            category: "AI Influencers",
+            title: "Isabella",
+            videoUrl: "./002.mp4",
             posterUrl: "https://via.placeholder.com/400x500?text=Bottle+Thumbnail",
           }}
           initial={{

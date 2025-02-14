@@ -14,30 +14,26 @@ const Subscriptions = ({ allPlans, userSubscriptions }: { allPlans: Subscription
   const transformPlansToUIFormat = (dbPlans: SubscriptionPlan[]) => {
     const planFeatureMap = {
       starter: [
-        "Up to 10 projects",
+        "Up to 10 videos Monthly",
         "Basic analytics",
         "48-hour support response time",
-        "Limited API access",
         "Community support",
       ],
       professional: [
-        "Unlimited projects",
+        "Upto 25 videos Monthly",
         "Advanced analytics",
         "24-hour support response time",
-        "Full API access",
         "Priority support",
         "Team collaboration",
         "Custom integrations",
       ],
       enterprise: [
+        "Upto 50 videos Monthly",
         "Everything in Professional",
         "Custom solutions",
-        "Dedicated account manager",
         "1-hour support response time",
-        "SSO Authentication",
-        "Advanced security",
-        "Custom contracts",
-        "SLA agreement",
+        "Regular Update of New Avatar"
+       
       ],
     };
   
@@ -68,9 +64,9 @@ const Subscriptions = ({ allPlans, userSubscriptions }: { allPlans: Subscription
             ? "For large organizations with specific needs"
             : "Perfect for individuals and small projects",
         buttonText: plan.name === "enterprise" 
-          ? "Contact Sales" 
+          ? "Get Started" 
           : "Get Started",
-        href: plan.name === "Enterprise" ? "/contact" : "/sign-up",
+       
         isPopular: plan.name === "professional",
         variantId: plan.variantId,
         interval: plan.interval,
@@ -93,9 +89,9 @@ const Subscriptions = ({ allPlans, userSubscriptions }: { allPlans: Subscription
             ? "For large organizations with specific needs"
             : "Perfect for individuals and small projects",
         buttonText: plan.name === "enterprise" 
-          ? "Contact Sales" 
+          ? "Get Started" 
           : "Get Started",
-        href: plan.name === "Enterprise" ? "/contact" : "/sign-up",
+       
         isPopular: plan.name === "professional",
         variantId: plan.variantId,
         interval: plan.interval,

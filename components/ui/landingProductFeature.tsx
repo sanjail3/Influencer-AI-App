@@ -1,39 +1,21 @@
+import React from 'react';
 import clsx from 'clsx';
-// import { VideoPlayer } from '@/components/shared/VideoPlayer';
-import { VideoPlayer } from '@/components/shared/VideoPlayer';
 import { GlowBg } from '@/components/shared/glow-bg';
 
-/**
- * A component meant to be used in the landing page.
- * It displays a title, description and video of a product's feature.
- *
- * The video could either be left, right or center (larger).
- * The section can have a background or not.
- */
-export const LandingProductVideoFeature = ({
-  children,
-  className,
-  innerClassName,
-  title,
-  titleComponent,
-  description,
-  descriptionComponent,
-  textPosition = 'left',
-  videoSrc,
-  videoPoster,
-  videoPosition = 'right',
-  videoMaxWidth = 'none',
-  autoPlay,
-  muted = true,
-  controls = false,
-  loop = false,
-  zoomOnHover = false,
-  minHeight = 350,
-  withBackground = false,
-  withBackgroundGlow = false,
-  variant = 'primary',
-  backgroundGlowVariant,
-}: {
+type VideoPosition = 'left' | 'right' | 'center';
+type TextPosition = 'center' | 'left';
+type VariantType = 'primary' | 'secondary';
+
+interface YouTubeEmbedProps {
+  videoId: string;
+  className?: string;
+  autoPlay?: boolean;
+  muted?: boolean;
+  controls?: boolean;
+  loop?: boolean;
+}
+
+interface LandingYouTubeFeatureProps {
   children?: React.ReactNode;
   className?: string;
   innerClassName?: string;
@@ -41,10 +23,9 @@ export const LandingProductVideoFeature = ({
   titleComponent?: React.ReactNode;
   description?: string | React.ReactNode;
   descriptionComponent?: React.ReactNode;
-  textPosition?: 'center' | 'left';
-  videoSrc?: string;
-  videoPoster?: string;
-  videoPosition?: 'left' | 'right' | 'center';
+  textPosition?: TextPosition;
+  youtubeVideoId?: string;
+  videoPosition?: VideoPosition;
   videoMaxWidth?: string;
   autoPlay?: boolean;
   muted?: boolean;
@@ -54,8 +35,62 @@ export const LandingProductVideoFeature = ({
   minHeight?: number;
   withBackground?: boolean;
   withBackgroundGlow?: boolean;
-  variant?: 'primary' | 'secondary';
-  backgroundGlowVariant?: 'primary' | 'secondary';
+  variant?: VariantType;
+  backgroundGlowVariant?: VariantType;
+}
+
+const YouTubeEmbed: React.FC<YouTubeEmbedProps> = ({ 
+  videoId, 
+  className, 
+  autoPlay = false,
+  muted = true,
+  controls = true,
+  loop = false
+}) => {
+  // Construct YouTube URL with parameters
+  const params = new URLSearchParams({
+    autoplay: autoPlay ? '1' : '0',
+    mute: muted ? '1' : '0',
+    controls: controls ? '1' : '0',
+    loop: loop ? '1' : '0',
+    playlist: loop ? videoId : '', // Required for looping
+  });
+
+  return (
+    <div className={clsx('relative w-full pt-[56.25%]', className)}>
+      <iframe
+        className="absolute inset-0 w-full h-full rounded-md"
+        src={`https://www.youtube.com/embed/${videoId}`}
+        title="YouTube video player"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+      />
+    </div>
+  );
+};
+
+export const LandingYouTubeFeature: React.FC<LandingYouTubeFeatureProps> = ({
+  children,
+  className,
+  innerClassName,
+  title,
+  titleComponent,
+  description,
+  descriptionComponent,
+  textPosition = 'left',
+  youtubeVideoId,
+  videoPosition = 'right',
+  videoMaxWidth = 'none',
+  autoPlay,
+  muted = true,
+  controls = true,
+  loop = false,
+  zoomOnHover = false,
+  minHeight = 350,
+  withBackground = false,
+  withBackgroundGlow = false,
+  variant = 'primary',
+  backgroundGlowVariant,
 }) => {
   return (
     <section
@@ -84,29 +119,7 @@ export const LandingProductVideoFeature = ({
           minHeight,
         }}
       >
-        {/* <div
-          className={clsx(
-            'flex flex-col gap-4 lg:col-span-5',
-            videoPosition === 'left' && 'lg:col-start-8 lg:row-start-1',
-            textPosition === 'center'
-              ? 'md:max-w-lg items-center text-center'
-              : 'items-start',
-          )}
-        >
-          {title ? (
-            <h2 className="text-4xl font-semibold leading-tight">{title}</h2>
-          ) : (
-            titleComponent
-          )}
-
-          {description ? (
-            <p className="mt-4 md:text-xl">{description}</p>
-          ) : (
-            descriptionComponent
-          )}
-
-          {children}
-        </div> */}
+        
 
         {withBackgroundGlow ? (
           <div className="hidden lg:flex justify-center w-full h-full absolute pointer-events-none">
@@ -117,40 +130,34 @@ export const LandingProductVideoFeature = ({
           </div>
         ) : null}
 
-        {videoSrc ? (
+        {youtubeVideoId ? (
           <>
             {videoPosition === 'center' ? (
               <section className="w-full mt-auto pt-6 md:pt-8">
-                <VideoPlayer
+                <YouTubeEmbed
                   className={clsx(
-                    'w-full rounded-md lg:col-span-7',
+                    'w-full',
                     zoomOnHover ? 'hover:scale-110 transition-all' : '',
                   )}
-                  poster={videoPoster}
-                  src={videoSrc}
+                  videoId={youtubeVideoId}
                   autoPlay={autoPlay}
                   muted={muted}
                   controls={controls}
-                  maxWidth={videoMaxWidth}
-                  variant={variant}
                   loop={loop}
                 />
               </section>
             ) : null}
 
             {videoPosition === 'left' || videoPosition === 'right' ? (
-              <VideoPlayer
+              <YouTubeEmbed
                 className={clsx(
-                  'w-full rounded-md lg:col-span-7',
+                  'w-full lg:col-span-7',
                   zoomOnHover ? 'hover:scale-110 transition-all' : '',
                 )}
-                poster={videoPoster}
-                src={videoSrc}
+                videoId={youtubeVideoId}
                 autoPlay={autoPlay}
                 muted={muted}
                 controls={controls}
-                maxWidth={videoMaxWidth}
-                variant={variant}
                 loop={loop}
               />
             ) : null}
@@ -160,3 +167,5 @@ export const LandingProductVideoFeature = ({
     </section>
   );
 };
+
+export default LandingYouTubeFeature;

@@ -23,18 +23,13 @@ export function CTA() {
           </p>
           <div className="mt-8 flex justify-center space-x-4">
             <a
-              href="#"
+              href="/sign-up"
               className="inline-flex items-center px-8 py-3 border-2 border-white rounded-full text-base font-medium text-white hover:bg-white hover:text-landing_primary-600 transition-colors duration-200"
             >
               Get Started Free
               <ArrowRight className="ml-2 w-5 h-5" />
             </a>
-            <a
-              href="#"
-              className="inline-flex items-center px-8 py-3 border-2 border-transparent rounded-full text-base font-medium text-landing_primary-600 bg-white hover:bg-landing_primary-50 transition-colors duration-200"
-            >
-              Book a Demo
-            </a>
+           
           </div>
         </motion.div>
       </div>

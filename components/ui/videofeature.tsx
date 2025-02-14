@@ -108,7 +108,7 @@ export default function ProductFeatures() {
           ref={cardRef}
           feature={{
             category: "AI Influencers",
-            videoUrl: "./001.mp4",
+            videoUrl: "https://aisaasvalidator.blob.core.windows.net/video-gpt/001.mp4",
             posterUrl: "https://via.placeholder.com/400x500?text=Vase+Thumbnail",
             title: "Maya",
           }}
@@ -136,7 +136,7 @@ export default function ProductFeatures() {
           feature={{
             category: "AI Influencers",
             title: "Emma",
-            videoUrl: "./004.mp4",
+            videoUrl: "https://aisaasvalidator.blob.core.windows.net/video-gpt/004.mp4",
             posterUrl: "https://via.placeholder.com/400x500?text=Jug+Thumbnail",
           }}
           initial={{
@@ -158,7 +158,7 @@ export default function ProductFeatures() {
           feature={{
             category: "AI Influencers",
             title: "Isabella",
-            videoUrl: "./002.mp4",
+            videoUrl: "https://aisaasvalidator.blob.core.windows.net/video-gpt/002.mp4",
             posterUrl: "https://via.placeholder.com/400x500?text=Bottle+Thumbnail",
           }}
           initial={{

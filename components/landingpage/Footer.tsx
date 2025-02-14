@@ -48,7 +48,7 @@ export function Footer() {
               </li>
               <li>
                 <a href="#contact" className="text-base text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
-                  Contact
+                  Contact at sanjai@influencer-ai.in
                 </a>
               </li>
               <li>

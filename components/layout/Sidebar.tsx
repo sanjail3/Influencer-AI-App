@@ -100,11 +100,6 @@ const sidebarItems = [
     comingSoon: true,
   },
   {
-    title: "Help",
-    icon: HelpCircle,
-    href: "/help",
-  },
-  {
     title: "Billing",
     icon: Settings,
     href: "/dashboard/myaccount",
